@@ -1,6 +1,6 @@
 import math
 from dataclasses import dataclass
-from typing import Callable, Dict, List
+from typing import Callable, Dict, List, Tuple
 
 from .config import FunctionConfig
 
@@ -51,14 +51,21 @@ VARIATIONS: Dict[str, VariationFunc] = {
     "sinusoidal": sinusoidal,
 }
 
+VARIATION_BASE_COLORS: Dict[str, Tuple[float, float, float]] = {
+    "linear": (1.0, 1.0, 1.0),
+    "swirl": (1.0, 0.3, 0.3),
+    "horseshoe": (0.3, 1.0, 0.3),
+    "spherical": (0.3, 0.3, 1.0),
+    "sinusoidal": (1.0, 1.0, 0.3),
+}
+
 
 @dataclass
 class CompiledVariation:
-    """Variation function bound with its weight."""
-
     name: str
     weight: float
     func: VariationFunc
+    base_color: Tuple[float, float, float]
 
 
 def compile_variations(functions: List[FunctionConfig]) -> List[CompiledVariation]:
@@ -79,6 +86,15 @@ def compile_variations(functions: List[FunctionConfig]) -> List[CompiledVariatio
         func = VARIATIONS.get(fn.name)
         if func is None:
             raise KeyError(f"Unknown variation name: {fn.name}")
-        compiled.append(CompiledVariation(name=fn.name, weight=fn.weight, func=func))
+
+        base_color = VARIATION_BASE_COLORS.get(fn.name, (0.8, 0.8, 0.8))
+        compiled.append(
+            CompiledVariation(
+                name=fn.name,
+                weight=fn.weight,
+                func=func,
+                base_color=base_color,
+            )
+        )
 
     return compiled
