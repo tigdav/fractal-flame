@@ -97,8 +97,8 @@ def generate_points(config: Config) -> List[Tuple[float, float, str]]:
     affine = AffineTransform.from_params(config.affine_params)
     rng = random.Random(config.seed)
 
-    x = 0.0
-    y = 0.0
+    x = rng.uniform(-1.0, 1.0)
+    y = rng.uniform(-1.0, 1.0)
 
     burn_in = max(100, config.iteration_count // 10)
     total_iterations = burn_in + config.iteration_count
@@ -146,8 +146,8 @@ def generate_flame(config: Config) -> tuple[NDArray[np.float64], NDArray[np.floa
     affine = AffineTransform.from_params(config.affine_params)
     rng = random.Random(config.seed)
 
-    x = 0.0
-    y = 0.0
+    x = rng.uniform(-1.0, 1.0)
+    y = rng.uniform(-1.0, 1.0)
     r = 0.0
     g = 0.0
     b = 0.0
