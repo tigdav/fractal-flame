@@ -1,5 +1,7 @@
 from typing import Iterable, Tuple
 
+import numpy as np
+from numpy.typing import NDArray
 from PIL import Image
 
 from .config import Config
@@ -14,14 +16,14 @@ FUNCTION_COLORS = {
 
 
 def _map_to_pixel(
-    x: float,
-    y: float,
-    width: int,
-    height: int,
-    x_min: float,
-    x_max: float,
-    y_min: float,
-    y_max: float,
+        x: float,
+        y: float,
+        width: int,
+        height: int,
+        x_min: float,
+        x_max: float,
+        y_min: float,
+        y_max: float,
 ) -> Tuple[int, int] | None:
     """Map fractal coordinates to pixel coordinates.
 
@@ -53,12 +55,12 @@ def _map_to_pixel(
 
 
 def render_points(
-    config: Config,
-    points: Iterable[tuple[float, float, str]],
-    x_min: float = -1.5,
-    x_max: float = 1.5,
-    y_min: float = -1.0,
-    y_max: float = 1.0,
+        config: Config,
+        points: Iterable[tuple[float, float, str]],
+        x_min: float = -1.5,
+        x_max: float = 1.5,
+        y_min: float = -1.0,
+        y_max: float = 1.0,
 ) -> Image.Image:
     """Render chaotic points into an RGB image.
 
@@ -89,3 +91,41 @@ def render_points(
         pixels[col, row] = color
 
     return image
+
+
+def render_image(
+        config: Config,
+        histogram: NDArray[np.float64],
+        colors: NDArray[np.float64],
+) -> Image.Image:
+    """Render histogram and color buffer into an RGB image.
+
+    Args:
+        config (Config): Runtime configuration.
+        histogram (NDArray[np.float64]): Hit counts per pixel.
+        colors (NDArray[np.float64]): Averaged RGB colors per pixel in [0, 1].
+
+    Returns:
+        PIL.Image.Image: Rendered image.
+    """
+    hist = histogram.copy()
+    hist[hist < 0.0] = 0.0
+
+    nonzero = hist > 0.0
+    if np.any(nonzero):
+        hist[nonzero] = np.log1p(hist[nonzero])
+        max_val = float(hist.max())
+        if max_val > 0.0:
+            hist /= max_val
+
+    img_float = colors * hist[..., None]
+    img_float = np.clip(img_float, 0.0, 1.0)
+
+    if config.gamma_correction:
+        gamma = config.gamma if config.gamma > 0.0 else 2.2
+        img_float = np.power(img_float, 1.0 / gamma)
+
+    img_float = np.clip(img_float, 0.0, 1.0)
+    img_uint8 = (img_float * 255.0 + 0.5).astype("uint8")
+
+    return Image.fromarray(img_uint8, mode="RGB")
