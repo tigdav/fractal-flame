@@ -30,6 +30,7 @@ class AffineParams:
 class FunctionConfig:
     name: str
     weight: float
+    affine_params: AffineParams | None = None
 
 
 @dataclass
@@ -50,10 +51,10 @@ def load_json_config(path: str) -> dict:
     """Load JSON configuration file into plain dictionary.
 
     Args:
-        path (str): Path to JSON config file.
+        path: Path to JSON config file.
 
     Returns:
-        dict: Parsed configuration dictionary.
+        Parsed configuration dictionary.
 
     Raises:
         ConfigError: If file cannot be read or parsed.
@@ -156,7 +157,26 @@ def _apply_json_to_config(config: Config, data: dict) -> None:
             weight = item.get("weight")
             if name is None or weight is None:
                 continue
-            parsed.append(FunctionConfig(name=str(name), weight=float(weight)))
+
+            affine_params_dict = item.get("affine_params")
+            affine_params: AffineParams | None = None
+            if isinstance(affine_params_dict, dict):
+                affine_params = AffineParams(
+                    a=float(affine_params_dict.get("a", 1.0)),
+                    b=float(affine_params_dict.get("b", 0.0)),
+                    c=float(affine_params_dict.get("c", 0.0)),
+                    d=float(affine_params_dict.get("d", 0.0)),
+                    e=float(affine_params_dict.get("e", 1.0)),
+                    f=float(affine_params_dict.get("f", 0.0)),
+                )
+
+            parsed.append(
+                FunctionConfig(
+                    name=str(name),
+                    weight=float(weight),
+                    affine_params=affine_params,
+                )
+            )
         if parsed:
             config.functions = parsed
 
