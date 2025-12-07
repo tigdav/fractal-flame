@@ -6,7 +6,6 @@ from typing import List, Tuple
 import numpy as np
 from numpy.typing import NDArray
 
-from .affine import AffineTransform
 from .config import Config
 from .transforms import CompiledVariation, compile_variations
 
@@ -85,16 +84,15 @@ def generate_points(config: Config) -> List[Tuple[float, float, str]]:
     """Generate chaotic points for a single-thread fractal flame.
 
     Args:
-        config (Config): Runtime configuration.
+        config: Runtime configuration.
 
     Returns:
-        list[tuple[float, float, str]]: Generated points as (x, y, variation_name).
+        Generated points as (x, y, variation_name).
     """
     logger.info("Starting single-thread Chaos Game with %d iterations", config.iteration_count)
 
-    variations = compile_variations(config.functions)
+    variations = compile_variations(config.functions, config.affine_params)
     cumulative = _build_weight_table(variations)
-    affine = AffineTransform.from_params(config.affine_params)
     rng = random.Random(config.seed)
 
     x = rng.uniform(-1.0, 1.0)
@@ -110,7 +108,7 @@ def generate_points(config: Config) -> List[Tuple[float, float, str]]:
     for i in range(total_iterations):
         variation = _choose_variation(rng, variations, cumulative)
 
-        x, y = affine.apply(x, y)
+        x, y = variation.affine.apply(x, y)
         x, y = variation.func(x, y)
 
         if i >= burn_in:
@@ -128,7 +126,7 @@ def generate_flame(config: Config) -> tuple[NDArray[np.float64], NDArray[np.floa
     """Generate histogram and color buffer for a fractal flame.
 
     Args:
-        config (Config): Runtime configuration.
+        config: Runtime configuration.
 
     Returns:
         tuple[NDArray[np.float64], NDArray[np.float64]]:
@@ -141,9 +139,8 @@ def generate_flame(config: Config) -> tuple[NDArray[np.float64], NDArray[np.floa
     color_acc = np.zeros((height, width, 3), dtype=np.float64)
     hits = np.zeros((height, width), dtype=np.float64)
 
-    variations = compile_variations(config.functions)
+    variations = compile_variations(config.functions, config.affine_params)
     cumulative = _build_weight_table(variations)
-    affine = AffineTransform.from_params(config.affine_params)
     rng = random.Random(config.seed)
 
     x = rng.uniform(-1.0, 1.0)
@@ -163,7 +160,7 @@ def generate_flame(config: Config) -> tuple[NDArray[np.float64], NDArray[np.floa
     for i in range(total_iterations):
         variation = _choose_variation(rng, variations, cumulative)
 
-        x, y = affine.apply(x, y)
+        x, y = variation.affine.apply(x, y)
         x, y = variation.func(x, y)
 
         base_r, base_g, base_b = variation.base_color
