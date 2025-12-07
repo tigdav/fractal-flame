@@ -2,7 +2,8 @@ import math
 from dataclasses import dataclass
 from typing import Callable, Dict, List, Tuple
 
-from .config import FunctionConfig
+from .affine import AffineTransform
+from .config import AffineParams, FunctionConfig
 
 VariationFunc = Callable[[float, float], tuple[float, float]]
 
@@ -66,16 +67,22 @@ class CompiledVariation:
     weight: float
     func: VariationFunc
     base_color: Tuple[float, float, float]
+    affine: AffineTransform
 
 
-def compile_variations(functions: List[FunctionConfig]) -> List[CompiledVariation]:
+def compile_variations(
+        functions: List[FunctionConfig],
+        global_affine: AffineParams,
+) -> List[CompiledVariation]:
     """Compile list of variations from FunctionConfig entries.
 
     Args:
-        functions (list[FunctionConfig]): Functions from Config.
+        functions: Functions from Config.
+        global_affine: Global affine params used as default for functions
+            without explicit affine configuration.
 
     Returns:
-        list[CompiledVariation]: Compiled variation list.
+        Compiled variation list.
 
     Raises:
         KeyError: If unknown variation name is encountered.
@@ -87,13 +94,17 @@ def compile_variations(functions: List[FunctionConfig]) -> List[CompiledVariatio
         if func is None:
             raise KeyError(f"Unknown variation name: {fn.name}")
 
+        params = fn.affine_params or global_affine
+        affine = AffineTransform.from_params(params)
         base_color = VARIATION_BASE_COLORS.get(fn.name, (0.8, 0.8, 0.8))
+
         compiled.append(
             CompiledVariation(
                 name=fn.name,
                 weight=fn.weight,
                 func=func,
                 base_color=base_color,
+                affine=affine,
             )
         )
 
