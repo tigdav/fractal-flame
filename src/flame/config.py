@@ -263,3 +263,12 @@ def validate_config(config: Config) -> None:
 
     if config.symmetry_level < 1:
         raise ConfigError("Symmetry level must be >= 1")
+
+    # Local import to avoid circular dependency with transforms module.
+    from .transforms import compile_variations
+
+    try:
+        # Ensure that all function names are known and affine params are valid.
+        compile_variations(config.functions, config.affine_params)
+    except KeyError as exc:
+        raise ConfigError(str(exc)) from exc
