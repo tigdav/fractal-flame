@@ -1,3 +1,4 @@
+import logging
 import math
 
 import numpy as np
@@ -183,3 +184,31 @@ def test_generate_flame_symmetry_increases_total_hits():
 
     assert hits_base > 0.0
     assert hits_sym >= hits_base
+
+
+def test_generate_points_logs_progress(caplog):
+    config = _make_simple_config(iters=20, symmetry=1)
+
+    with caplog.at_level(logging.INFO, logger="fractal_flame.core"):
+        points = generate_points(config)
+
+    assert len(points) == config.iteration_count
+
+    messages = [record.getMessage() for record in caplog.records if record.name == "fractal_flame.core"]
+    assert any("Chaos Game progress" in msg for msg in messages)
+    assert any("Chaos Game finished, generated" in msg for msg in messages)
+
+
+def test_generate_flame_logs_progress(caplog):
+    config = _make_simple_config(width=16, height=12, iters=20, symmetry=1)
+
+    with caplog.at_level(logging.INFO, logger="fractal_flame.core"):
+        histogram, colors = generate_flame(config)
+
+    assert histogram.shape == (config.size.height, config.size.width)
+    assert colors.shape == (config.size.height, config.size.width, 3)
+
+    messages = [record.getMessage() for record in caplog.records if record.name == "fractal_flame.core"]
+    assert any("Starting histogram-based Chaos Game" in msg for msg in messages)
+    assert any("Chaos Game progress" in msg for msg in messages)
+    assert any("Chaos Game finished, histogram generated" in msg for msg in messages)
