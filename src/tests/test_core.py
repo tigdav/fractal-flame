@@ -4,6 +4,7 @@ import math
 import numpy as np
 import pytest
 
+from flame import core
 from flame.affine import AffineTransform
 from flame.config import AffineParams, Config, FunctionConfig, SizeConfig
 from flame.core import (
@@ -212,3 +213,46 @@ def test_generate_flame_logs_progress(caplog):
     assert any("Starting histogram-based Chaos Game" in msg for msg in messages)
     assert any("Chaos Game progress" in msg for msg in messages)
     assert any("Chaos Game finished, histogram generated" in msg for msg in messages)
+
+
+def test_generate_flame_symmetry_level_multiplies_hits():
+    width = 64
+    height = 64
+
+    base_config = Config(
+        size=SizeConfig(width=width, height=height),
+        iteration_count=20,
+        output_path="result.png",
+        threads=1,
+        seed=42.0,
+        functions=[FunctionConfig(name="linear", weight=1.0)],
+        affine_params=AffineParams(),  # identity
+        gamma_correction=False,
+        gamma=2.2,
+        symmetry_level=1,
+    )
+
+    hist_single, _ = core.generate_flame(base_config)
+
+    sym_config = Config(
+        size=SizeConfig(width=width, height=height),
+        iteration_count=20,
+        output_path="result.png",
+        threads=1,
+        seed=42.0,
+        functions=[FunctionConfig(name="linear", weight=1.0)],
+        affine_params=AffineParams(),
+        gamma_correction=False,
+        gamma=2.2,
+        symmetry_level=5,
+    )
+
+    hist_sym, _ = core.generate_flame(sym_config)
+
+    assert hist_single.shape == hist_sym.shape == (height, width)
+
+    single_sum = float(hist_single.sum())
+    sym_sum = float(hist_sym.sum())
+
+    assert single_sum > 0.0
+    assert sym_sum == pytest.approx(single_sum * 5.0)
