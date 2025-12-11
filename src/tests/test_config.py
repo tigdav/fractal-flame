@@ -212,6 +212,29 @@ def test_build_config_cli_overrides_json(tmp_path):
     assert config.symmetry_level == 5
 
 
+def test_build_config_uses_defaults_without_cli_or_json():
+    """Config built with no CLI and no JSON should use pure defaults."""
+    args = _make_empty_args()  # no config path, no overrides
+
+    config = build_config(args)
+
+    assert config.size.width == 1920
+    assert config.size.height == 1080
+    assert config.iteration_count == 2500
+    assert config.output_path == "result.png"
+    assert config.threads == 1
+    assert config.seed == pytest.approx(5.1234)
+
+    assert isinstance(config.affine_params, AffineParams)
+    assert config.affine_params == AffineParams()
+
+    assert config.functions == []
+
+    assert config.gamma_correction is False
+    assert config.gamma == pytest.approx(2.2)
+    assert config.symmetry_level == 1
+
+
 def _make_valid_config() -> Config:
     return Config(
         size=SizeConfig(width=800, height=600),
