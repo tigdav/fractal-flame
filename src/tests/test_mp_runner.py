@@ -4,6 +4,9 @@ import pytest
 from flame import mp_runner
 from flame.config import AffineParams, Config, FunctionConfig, SizeConfig
 
+import time
+from concurrent.futures import ThreadPoolExecutor
+
 
 def _make_base_config(threads: int = 1) -> Config:
     return Config(
@@ -116,3 +119,60 @@ def test_generate_flame_multi_process_aggregates_worker_results(monkeypatch):
 
     # first worker contributed color 0.0, second worker color 1.0 -> average is 0.5
     assert np.allclose(colors, 0.5)
+
+
+@pytest.mark.slow
+def test_generate_flame_multi_thread_faster_than_sequential(monkeypatch):
+    """
+    Benchmark-style check: parallel execution finishes faster than
+    the naive sequential total (N × sleep_per_worker).
+
+    This is not a performance test — only a correctness check that
+    mp_runner splits work and executes tasks concurrently.
+    """
+    sleep_per_worker = 0.05
+    threads = 4
+
+    config = _make_base_config(threads=threads)
+    config.iteration_count = 100
+
+    # Fake single-worker compute: blocks for sleep_per_worker.
+    def fake_generate_single(cfg):
+        time.sleep(sleep_per_worker)
+        shape = (cfg.size.height, cfg.size.width)
+        hist = np.ones(shape, dtype=np.float64)
+        colors = np.zeros(shape + (3,), dtype=np.float64)
+        return hist, colors
+
+    monkeypatch.setattr(mp_runner, "generate_flame_single", fake_generate_single)
+
+    # Use a thread pool to simulate parallel workers.
+    class ThreadPool:
+        def __init__(self, processes: int):
+            self._executor = ThreadPoolExecutor(max_workers=processes)
+
+        def __enter__(self):
+            return self
+
+        def __exit__(self, exc_type, exc, tb):
+            self._executor.shutdown(wait=True)
+
+        def map(self, func, args):
+            futures = [self._executor.submit(func, a) for a in args]
+            return [f.result() for f in futures]
+
+    monkeypatch.setattr(mp_runner, "Pool", ThreadPool)
+
+    start = time.perf_counter()
+    hist, colors = mp_runner.generate_flame(config)
+    elapsed = time.perf_counter() - start
+
+    # Basic sanity checks.
+    assert hist.shape == (config.size.height, config.size.width)
+    assert colors.shape == (config.size.height, config.size.width, 3)
+
+    # If executed sequentially, total time = N × sleep.
+    sequential_time = sleep_per_worker * threads
+
+    # Parallel execution must be strictly faster than sequential.
+    assert elapsed < sequential_time
