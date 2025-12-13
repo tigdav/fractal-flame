@@ -1,7 +1,6 @@
 import logging
 import time
 from multiprocessing import Pool
-from typing import List, Tuple
 
 import numpy as np
 from numpy.typing import NDArray
@@ -22,6 +21,7 @@ def _build_worker_config(config: Config, iterations: int, seed_offset: int) -> C
 
     Returns:
         New Config instance for a worker.
+
     """
     return Config(
         size=config.size,
@@ -37,7 +37,7 @@ def _build_worker_config(config: Config, iterations: int, seed_offset: int) -> C
     )
 
 
-def _worker_task(config: Config) -> Tuple[NDArray[np.float64], NDArray[np.float64]]:
+def _worker_task(config: Config) -> tuple[NDArray[np.float64], NDArray[np.float64]]:
     """Worker entry point for multiprocessing.
 
     Args:
@@ -45,11 +45,12 @@ def _worker_task(config: Config) -> Tuple[NDArray[np.float64], NDArray[np.float6
 
     Returns:
         Tuple of (histogram, colors) for this worker.
+
     """
     return generate_flame_single(config)
 
 
-def _split_iterations(total: int, workers: int) -> List[int]:
+def _split_iterations(total: int, workers: int) -> list[int]:
     """Split total iteration count into per-worker chunks.
 
     Args:
@@ -58,11 +59,12 @@ def _split_iterations(total: int, workers: int) -> List[int]:
 
     Returns:
         List of iteration counts per worker.
+
     """
     base = total // workers
     extra = total % workers
 
-    chunks: List[int] = []
+    chunks: list[int] = []
     for i in range(workers):
         chunk = base + (1 if i < extra else 0)
         chunks.append(chunk)
@@ -77,6 +79,7 @@ def generate_flame(config: Config) -> tuple[NDArray[np.float64], NDArray[np.floa
 
     Returns:
         Tuple of (histogram, colors) arrays.
+
     """
     if config.threads <= 1:
         logger.info("Running single-process flame generation")
@@ -93,7 +96,7 @@ def generate_flame(config: Config) -> tuple[NDArray[np.float64], NDArray[np.floa
 
     iteration_chunks = _split_iterations(config.iteration_count, threads)
 
-    worker_configs: List[Config] = []
+    worker_configs: list[Config] = []
     for idx, chunk_iters in enumerate(iteration_chunks):
         worker_config = _build_worker_config(
             config=config,
@@ -105,8 +108,8 @@ def generate_flame(config: Config) -> tuple[NDArray[np.float64], NDArray[np.floa
     with Pool(processes=threads) as pool:
         results = pool.map(_worker_task, worker_configs)
 
-    hist_list: List[NDArray[np.float64]] = []
-    color_sum_list: List[NDArray[np.float64]] = []
+    hist_list: list[NDArray[np.float64]] = []
+    color_sum_list: list[NDArray[np.float64]] = []
 
     for hist, colors in results:
         hist_list.append(hist)

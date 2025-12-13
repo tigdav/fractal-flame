@@ -1,9 +1,7 @@
+import argparse
 import json
 from dataclasses import dataclass
 from pathlib import Path
-from typing import List
-
-import argparse
 
 
 class ConfigError(Exception):
@@ -40,7 +38,7 @@ class Config:
     output_path: str
     threads: int
     seed: float
-    functions: List[FunctionConfig]
+    functions: list[FunctionConfig]
     affine_params: AffineParams
     gamma_correction: bool = False
     gamma: float = 2.2
@@ -58,6 +56,7 @@ def load_json_config(path: str) -> dict:
 
     Raises:
         ConfigError: If file cannot be read or parsed.
+
     """
     try:
         config_path = Path(path)
@@ -92,8 +91,8 @@ def _parse_affine_params(value: str) -> AffineParams:
     return AffineParams(a=a, b=b, c=c, d=d, e=e, f=f)
 
 
-def _parse_functions(value: str) -> List[FunctionConfig]:
-    functions: List[FunctionConfig] = []
+def _parse_functions(value: str) -> list[FunctionConfig]:
+    functions: list[FunctionConfig] = []
 
     for item in value.split(","):
         item = item.strip()
@@ -153,7 +152,7 @@ def _apply_json_to_config(config: Config, data: dict) -> None:
 
     funcs = data.get("functions")
     if isinstance(funcs, list):
-        parsed: List[FunctionConfig] = []
+        parsed: list[FunctionConfig] = []
         for item in funcs:
             if not isinstance(item, dict):
                 continue

@@ -1,5 +1,4 @@
-"""
-Manual benchmark for gamma correction overhead during rendering.
+"""Manual benchmark for gamma correction overhead during rendering.
 
 Measures render_image() runtime with gamma correction off vs on,
 using a fixed histogram/colors generated once.

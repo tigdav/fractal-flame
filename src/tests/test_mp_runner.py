@@ -1,11 +1,11 @@
+import time
+from concurrent.futures import ThreadPoolExecutor
+
 import numpy as np
 import pytest
 
 from flame import mp_runner
 from flame.config import AffineParams, Config, FunctionConfig, SizeConfig
-
-import time
-from concurrent.futures import ThreadPoolExecutor
 
 
 def _make_base_config(threads: int = 1) -> Config:
@@ -124,8 +124,7 @@ def test_generate_flame_multi_process_aggregates_worker_results(monkeypatch):
 
 @pytest.mark.slow
 def test_generate_flame_multi_thread_faster_than_sequential(monkeypatch):
-    """
-    Benchmark-style check: parallel execution finishes faster than
+    """Benchmark-style check: parallel execution finishes faster than
     the naive sequential total (N × sleep_per_worker).
 
     This is not a performance test — only a correctness check that

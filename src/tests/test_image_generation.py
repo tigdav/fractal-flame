@@ -1,7 +1,7 @@
 import numpy as np
 
-from flame.config import AffineParams, Config, FunctionConfig, SizeConfig
 from flame import core
+from flame.config import AffineParams, Config, FunctionConfig, SizeConfig
 from flame.render import render_image
 
 

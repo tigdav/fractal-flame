@@ -123,7 +123,7 @@ def test_apply_symmetry_rotates_around_origin():
         (-1.0, 0.0),
         (0.0, -1.0),
     ]
-    for (px, py), (ex, ey) in zip(points, expected):
+    for (px, py), (ex, ey) in zip(points, expected, strict=False):
         assert px == pytest.approx(ex, abs=1e-6)
         assert py == pytest.approx(ey, abs=1e-6)
 

@@ -1,5 +1,4 @@
-"""
-Manual benchmark for symmetry overhead in fractal flame generation.
+"""Manual benchmark for symmetry overhead in fractal flame generation.
 
 Measures generate_flame() runtime for different symmetry_level values
 using a fixed heavy configuration and a fixed number of worker processes.

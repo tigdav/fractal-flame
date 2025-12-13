@@ -1,7 +1,6 @@
 import logging
 import math
 import random
-from typing import List, Tuple
 
 import numpy as np
 from numpy.typing import NDArray
@@ -17,14 +16,14 @@ Y_MIN = -1.0
 Y_MAX = 1.0
 
 
-def _build_weight_table(variations: List[CompiledVariation]) -> List[float]:
+def _build_weight_table(variations: list[CompiledVariation]) -> list[float]:
     weights = [max(v.weight, 0.0) for v in variations]
     total = sum(weights)
     if total <= 0.0:
         total = float(len(weights))
         weights = [1.0 for _ in weights]
 
-    cumulative: List[float] = []
+    cumulative: list[float] = []
     acc = 0.0
     for w in weights:
         acc += w / total
@@ -35,21 +34,21 @@ def _build_weight_table(variations: List[CompiledVariation]) -> List[float]:
 
 def _choose_variation(
     rng: random.Random,
-    variations: List[CompiledVariation],
-    cumulative: List[float],
+    variations: list[CompiledVariation],
+    cumulative: list[float],
 ) -> CompiledVariation:
     r = rng.random()
-    for v, threshold in zip(variations, cumulative):
+    for v, threshold in zip(variations, cumulative, strict=False):
         if r <= threshold:
             return v
     return variations[-1]
 
 
-def _apply_symmetry(x: float, y: float, level: int) -> List[Tuple[float, float]]:
+def _apply_symmetry(x: float, y: float, level: int) -> list[tuple[float, float]]:
     if level <= 1:
         return [(x, y)]
 
-    points: List[Tuple[float, float]] = []
+    points: list[tuple[float, float]] = []
     for k in range(level):
         angle = 2.0 * math.pi * k / float(level)
         cos_a = math.cos(angle)
@@ -65,7 +64,7 @@ def _map_to_pixel(
     y: float,
     width: int,
     height: int,
-) -> Tuple[int, int] | None:
+) -> tuple[int, int] | None:
     if x < X_MIN or x > X_MAX or y < Y_MIN or y > Y_MAX:
         return None
 
@@ -80,7 +79,7 @@ def _map_to_pixel(
     return None
 
 
-def generate_points(config: Config) -> List[Tuple[float, float, str]]:
+def generate_points(config: Config) -> list[tuple[float, float, str]]:
     """Generate chaotic points for a single-thread fractal flame.
 
     Args:
@@ -88,6 +87,7 @@ def generate_points(config: Config) -> List[Tuple[float, float, str]]:
 
     Returns:
         Generated points as (x, y, variation_name).
+
     """
     logger.info(
         "Starting single-thread Chaos Game with %d iterations", config.iteration_count
@@ -103,7 +103,7 @@ def generate_points(config: Config) -> List[Tuple[float, float, str]]:
     burn_in = max(100, config.iteration_count // 10)
     total_iterations = burn_in + config.iteration_count
 
-    points: List[Tuple[float, float, str]] = []
+    points: list[tuple[float, float, str]] = []
 
     log_step = max(total_iterations // 10, 1)
 
@@ -133,6 +133,7 @@ def generate_flame(config: Config) -> tuple[NDArray[np.float64], NDArray[np.floa
     Returns:
         tuple[NDArray[np.float64], NDArray[np.float64]]:
             Histogram array with hit counts and color accumulator array.
+
     """
     width = config.size.width
     height = config.size.height

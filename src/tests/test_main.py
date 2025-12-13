@@ -4,8 +4,8 @@ from types import SimpleNamespace
 import numpy as np
 from PIL import Image
 
-from flame.config import AffineParams, Config, ConfigError, FunctionConfig, SizeConfig
 import flame.__main__ as main_module
+from flame.config import AffineParams, Config, ConfigError, FunctionConfig, SizeConfig
 
 
 def _make_config(output_path: str) -> Config:

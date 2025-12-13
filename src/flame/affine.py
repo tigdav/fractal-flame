@@ -27,6 +27,7 @@ class AffineTransform:
 
         Returns:
             AffineTransform: Transform instance.
+
         """
         return cls(
             a=params.a,
@@ -46,6 +47,7 @@ class AffineTransform:
 
         Returns:
             tuple[float, float]: Transformed coordinates.
+
         """
         new_x = self.a * x + self.b * y + self.c
         new_y = self.d * x + self.e * y + self.f

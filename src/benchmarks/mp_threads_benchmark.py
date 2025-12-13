@@ -1,5 +1,4 @@
-"""
-Manual performance benchmark for fractal flame generation.
+"""Manual performance benchmark for fractal flame generation.
 
 This script measures execution time of generate_flame()
 for 1, 2, 4 and 8 worker processes using a fixed heavy configuration.

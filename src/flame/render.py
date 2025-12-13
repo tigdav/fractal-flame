@@ -1,4 +1,4 @@
-from typing import Iterable, Tuple
+from collections.abc import Iterable
 
 import numpy as np
 from numpy.typing import NDArray
@@ -24,7 +24,7 @@ def _map_to_pixel(
     x_max: float,
     y_min: float,
     y_max: float,
-) -> Tuple[int, int] | None:
+) -> tuple[int, int] | None:
     """Map fractal coordinates to pixel coordinates.
 
     Args:
@@ -39,6 +39,7 @@ def _map_to_pixel(
 
     Returns:
         tuple[int, int] | None: Pixel coordinates (col, row) or None if out of bounds.
+
     """
     if x < x_min or x > x_max or y < y_min or y > y_max:
         return None
@@ -74,6 +75,7 @@ def render_points(
 
     Returns:
         PIL.Image.Image: Rendered image.
+
     """
     width = config.size.width
     height = config.size.height
@@ -107,6 +109,7 @@ def render_image(
 
     Returns:
         PIL.Image.Image: Rendered image.
+
     """
     hist = histogram.copy()
     hist[hist < 0.0] = 0.0

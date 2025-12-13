@@ -1,6 +1,6 @@
 import math
+from collections.abc import Callable
 from dataclasses import dataclass
-from typing import Callable, Dict, List, Tuple
 
 from .affine import AffineTransform
 from .config import AffineParams, FunctionConfig
@@ -44,7 +44,7 @@ def sinusoidal(x: float, y: float) -> tuple[float, float]:
     return math.sin(x), math.sin(y)
 
 
-VARIATIONS: Dict[str, VariationFunc] = {
+VARIATIONS: dict[str, VariationFunc] = {
     "linear": linear,
     "swirl": swirl,
     "horseshoe": horseshoe,
@@ -52,7 +52,7 @@ VARIATIONS: Dict[str, VariationFunc] = {
     "sinusoidal": sinusoidal,
 }
 
-VARIATION_BASE_COLORS: Dict[str, Tuple[float, float, float]] = {
+VARIATION_BASE_COLORS: dict[str, tuple[float, float, float]] = {
     "linear": (1.0, 1.0, 1.0),
     "swirl": (1.0, 0.3, 0.3),
     "horseshoe": (0.3, 1.0, 0.3),
@@ -66,14 +66,14 @@ class CompiledVariation:
     name: str
     weight: float
     func: VariationFunc
-    base_color: Tuple[float, float, float]
+    base_color: tuple[float, float, float]
     affine: AffineTransform
 
 
 def compile_variations(
-    functions: List[FunctionConfig],
+    functions: list[FunctionConfig],
     global_affine: AffineParams,
-) -> List[CompiledVariation]:
+) -> list[CompiledVariation]:
     """Compile list of variations from FunctionConfig entries.
 
     Args:
@@ -86,8 +86,9 @@ def compile_variations(
 
     Raises:
         KeyError: If unknown variation name is encountered.
+
     """
-    compiled: List[CompiledVariation] = []
+    compiled: list[CompiledVariation] = []
 
     for fn in functions:
         func = VARIATIONS.get(fn.name)
