@@ -34,11 +34,11 @@ def _make_dummy_variation(weight: float = 1.0) -> CompiledVariation:
 
 
 def _make_simple_config(
-        *,
-        width: int = 40,
-        height: int = 30,
-        iters: int = 200,
-        symmetry: int = 1,
+    *,
+    width: int = 40,
+    height: int = 30,
+    iters: int = 200,
+    symmetry: int = 1,
 ) -> Config:
     return Config(
         size=SizeConfig(width=width, height=height),
@@ -195,7 +195,11 @@ def test_generate_points_logs_progress(caplog):
 
     assert len(points) == config.iteration_count
 
-    messages = [record.getMessage() for record in caplog.records if record.name == "fractal_flame.core"]
+    messages = [
+        record.getMessage()
+        for record in caplog.records
+        if record.name == "fractal_flame.core"
+    ]
     assert any("Chaos Game progress" in msg for msg in messages)
     assert any("Chaos Game finished, generated" in msg for msg in messages)
 
@@ -209,7 +213,11 @@ def test_generate_flame_logs_progress(caplog):
     assert histogram.shape == (config.size.height, config.size.width)
     assert colors.shape == (config.size.height, config.size.width, 3)
 
-    messages = [record.getMessage() for record in caplog.records if record.name == "fractal_flame.core"]
+    messages = [
+        record.getMessage()
+        for record in caplog.records
+        if record.name == "fractal_flame.core"
+    ]
     assert any("Starting histogram-based Chaos Game" in msg for msg in messages)
     assert any("Chaos Game progress" in msg for msg in messages)
     assert any("Chaos Game finished, histogram generated" in msg for msg in messages)

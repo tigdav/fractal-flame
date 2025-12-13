@@ -20,8 +20,7 @@ def _make_config(gamma_on: bool) -> Config:
 
 
 def test_render_image_gamma_correction_changes_pixels():
-    hist = np.array([[1.0, 2.0],
-                     [3.0, 4.0]], dtype=np.float64)
+    hist = np.array([[1.0, 2.0], [3.0, 4.0]], dtype=np.float64)
 
     colors = np.ones((2, 2, 3), dtype=np.float64) * 0.8
 

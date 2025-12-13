@@ -6,10 +6,10 @@ from flame.render import _map_to_pixel, render_image, render_points
 
 
 def _make_config(
-        width: int = 10,
-        height: int = 10,
-        gamma_correction: bool = False,
-        gamma: float = 2.2,
+    width: int = 10,
+    height: int = 10,
+    gamma_correction: bool = False,
+    gamma: float = 2.2,
 ) -> Config:
     return Config(
         size=SizeConfig(width=width, height=height),

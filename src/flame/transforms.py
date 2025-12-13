@@ -71,8 +71,8 @@ class CompiledVariation:
 
 
 def compile_variations(
-        functions: List[FunctionConfig],
-        global_affine: AffineParams,
+    functions: List[FunctionConfig],
+    global_affine: AffineParams,
 ) -> List[CompiledVariation]:
     """Compile list of variations from FunctionConfig entries.
 

@@ -34,9 +34,9 @@ def _build_weight_table(variations: List[CompiledVariation]) -> List[float]:
 
 
 def _choose_variation(
-        rng: random.Random,
-        variations: List[CompiledVariation],
-        cumulative: List[float],
+    rng: random.Random,
+    variations: List[CompiledVariation],
+    cumulative: List[float],
 ) -> CompiledVariation:
     r = rng.random()
     for v, threshold in zip(variations, cumulative):
@@ -61,10 +61,10 @@ def _apply_symmetry(x: float, y: float, level: int) -> List[Tuple[float, float]]
 
 
 def _map_to_pixel(
-        x: float,
-        y: float,
-        width: int,
-        height: int,
+    x: float,
+    y: float,
+    width: int,
+    height: int,
 ) -> Tuple[int, int] | None:
     if x < X_MIN or x > X_MAX or y < Y_MIN or y > Y_MAX:
         return None
@@ -89,7 +89,9 @@ def generate_points(config: Config) -> List[Tuple[float, float, str]]:
     Returns:
         Generated points as (x, y, variation_name).
     """
-    logger.info("Starting single-thread Chaos Game with %d iterations", config.iteration_count)
+    logger.info(
+        "Starting single-thread Chaos Game with %d iterations", config.iteration_count
+    )
 
     variations = compile_variations(config.functions, config.affine_params)
     cumulative = _build_weight_table(variations)
@@ -155,7 +157,9 @@ def generate_flame(config: Config) -> tuple[NDArray[np.float64], NDArray[np.floa
     log_step = max(total_iterations // 10, 1)
     mix = 0.5
 
-    logger.info("Starting histogram-based Chaos Game with %d iterations", config.iteration_count)
+    logger.info(
+        "Starting histogram-based Chaos Game with %d iterations", config.iteration_count
+    )
 
     for i in range(total_iterations):
         variation = _choose_variation(rng, variations, cumulative)

@@ -16,14 +16,14 @@ FUNCTION_COLORS = {
 
 
 def _map_to_pixel(
-        x: float,
-        y: float,
-        width: int,
-        height: int,
-        x_min: float,
-        x_max: float,
-        y_min: float,
-        y_max: float,
+    x: float,
+    y: float,
+    width: int,
+    height: int,
+    x_min: float,
+    x_max: float,
+    y_min: float,
+    y_max: float,
 ) -> Tuple[int, int] | None:
     """Map fractal coordinates to pixel coordinates.
 
@@ -55,12 +55,12 @@ def _map_to_pixel(
 
 
 def render_points(
-        config: Config,
-        points: Iterable[tuple[float, float, str]],
-        x_min: float = -1.5,
-        x_max: float = 1.5,
-        y_min: float = -1.0,
-        y_max: float = 1.0,
+    config: Config,
+    points: Iterable[tuple[float, float, str]],
+    x_min: float = -1.5,
+    x_max: float = 1.5,
+    y_min: float = -1.0,
+    y_max: float = 1.0,
 ) -> Image.Image:
     """Render chaotic points into an RGB image.
 
@@ -94,9 +94,9 @@ def render_points(
 
 
 def render_image(
-        config: Config,
-        histogram: NDArray[np.float64],
-        colors: NDArray[np.float64],
+    config: Config,
+    histogram: NDArray[np.float64],
+    colors: NDArray[np.float64],
 ) -> Image.Image:
     """Render histogram and color buffer into an RGB image.
 

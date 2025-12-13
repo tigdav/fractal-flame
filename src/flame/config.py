@@ -80,7 +80,9 @@ def load_json_config(path: str) -> dict:
 def _parse_affine_params(value: str) -> AffineParams:
     parts = value.split(",")
     if len(parts) != 6:
-        raise ConfigError("Affine params must have 6 comma-separated values a,b,c,d,e,f")
+        raise ConfigError(
+            "Affine params must have 6 comma-separated values a,b,c,d,e,f"
+        )
 
     try:
         a, b, c, d, e, f = (float(p.strip()) for p in parts)
@@ -106,7 +108,9 @@ def _parse_functions(value: str) -> List[FunctionConfig]:
         try:
             weight = float(weight_str.strip())
         except ValueError as exc:
-            raise ConfigError(f"Invalid weight for function '{name}': {weight_str}") from exc
+            raise ConfigError(
+                f"Invalid weight for function '{name}': {weight_str}"
+            ) from exc
 
         functions.append(FunctionConfig(name=name, weight=weight))
 

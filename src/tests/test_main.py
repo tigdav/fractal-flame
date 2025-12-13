@@ -27,9 +27,7 @@ def test_main_creates_png_and_returns_zero(tmp_path, monkeypatch, caplog):
     caplog.set_level(logging.INFO)
 
     # make CLI parser return anything, it will be passed into build_config
-    monkeypatch.setattr(
-        main_module, "parse_args", lambda: SimpleNamespace(dummy=True)
-    )
+    monkeypatch.setattr(main_module, "parse_args", lambda: SimpleNamespace(dummy=True))
 
     # config with non-png extension to test forcing .png suffix
     raw_output = tmp_path / "image.jpg"
@@ -77,9 +75,7 @@ def test_main_creates_png_and_returns_zero(tmp_path, monkeypatch, caplog):
 def test_main_returns_one_on_config_error(monkeypatch, caplog):
     caplog.set_level(logging.ERROR)
 
-    monkeypatch.setattr(
-        main_module, "parse_args", lambda: SimpleNamespace(dummy=True)
-    )
+    monkeypatch.setattr(main_module, "parse_args", lambda: SimpleNamespace(dummy=True))
 
     def fake_build_config(args):
         raise ConfigError("bad config")
@@ -95,9 +91,7 @@ def test_main_returns_one_on_config_error(monkeypatch, caplog):
 def test_main_returns_one_on_unhandled_exception(monkeypatch, caplog):
     caplog.set_level(logging.ERROR)
 
-    monkeypatch.setattr(
-        main_module, "parse_args", lambda: SimpleNamespace(dummy=True)
-    )
+    monkeypatch.setattr(main_module, "parse_args", lambda: SimpleNamespace(dummy=True))
 
     def fake_build_config(args):
         raise RuntimeError("boom")

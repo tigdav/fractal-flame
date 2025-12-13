@@ -6,11 +6,11 @@ from flame.render import render_image
 
 
 def _make_linear_config(
-        *,
-        width: int = 16,
-        height: int = 16,
-        iters: int = 50,
-        seed: float = 123.0,
+    *,
+    width: int = 16,
+    height: int = 16,
+    iters: int = 50,
+    seed: float = 123.0,
 ) -> Config:
     return Config(
         size=SizeConfig(width=width, height=height),

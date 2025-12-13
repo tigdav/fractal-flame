@@ -121,8 +121,6 @@ def generate_flame(config: Config) -> tuple[NDArray[np.float64], NDArray[np.floa
         avg_colors[mask] = total_color_sum[mask] / total_hist[mask][..., None]
 
     elapsed = time.perf_counter() - start
-    logger.info(
-        "Multi-process flame generation finished in %.3f seconds", elapsed
-    )
+    logger.info("Multi-process flame generation finished in %.3f seconds", elapsed)
 
     return total_hist, avg_colors
