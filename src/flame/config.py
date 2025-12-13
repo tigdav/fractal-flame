@@ -1,19 +1,43 @@
-import argparse
 import json
+from collections.abc import Mapping
 from dataclasses import dataclass
 from pathlib import Path
+from typing import TYPE_CHECKING
+
+if TYPE_CHECKING:
+    import argparse
 
 
 class ConfigError(Exception):
     """Raised when configuration is invalid."""
 
 
+AFFINE_PARAM_COUNT = 6
+
+DEFAULT_WIDTH = 1920
+DEFAULT_HEIGHT = 1080
+DEFAULT_ITERATION_COUNT = 2500
+DEFAULT_OUTPUT_PATH = "result.png"
+DEFAULT_THREADS = 1
+DEFAULT_SEED = 5.1234
+DEFAULT_GAMMA = 2.2
+DEFAULT_SYMMETRY_LEVEL = 1
+DEFAULT_FUNCTION = "swirl"
+
+
+JsonMapping = Mapping[str, object]
+
+
+def _raise_config(msg: str) -> None:
+    raise ConfigError(msg)
+
+
 @dataclass
 class SizeConfig:
     """Image size configuration."""
 
-    width: int = 1920
-    height: int = 1080
+    width: int = DEFAULT_WIDTH
+    height: int = DEFAULT_HEIGHT
 
 
 @dataclass
@@ -56,52 +80,45 @@ class Config:
     functions: list[FunctionConfig]
     affine_params: AffineParams
     gamma_correction: bool = False
-    gamma: float = 2.2
-    symmetry_level: int = 1
+    gamma: float = DEFAULT_GAMMA
+    symmetry_level: int = DEFAULT_SYMMETRY_LEVEL
 
 
-def load_json_config(path: str) -> dict:
-    """Load JSON configuration file into plain dictionary.
-
-    Args:
-        path: Path to JSON config file.
-
-    Returns:
-        Parsed configuration dictionary.
-
-    Raises:
-        ConfigError: If file cannot be read or parsed.
-
-    """
+def load_json_config(path: str) -> JsonMapping:
+    """Load JSON configuration file into plain dictionary."""
     try:
         config_path = Path(path)
         if not config_path.exists():
-            raise ConfigError(f"Config file not found: {path}")
+            msg = f"Config file not found: {path}"
+            _raise_config(msg)
 
         with config_path.open("r", encoding="utf-8") as f:
-            data = json.load(f)
+            data: object = json.load(f)
 
         if not isinstance(data, dict):
-            raise ConfigError("JSON config root must be an object")
-
-        return data
+            msg = "JSON config root must be an object"
+            _raise_config(msg)
     except json.JSONDecodeError as exc:
-        raise ConfigError(f"Failed to parse JSON config: {exc}") from exc
+        msg = f"Failed to parse JSON config: {exc}"
+        raise ConfigError(msg) from exc
     except OSError as exc:
-        raise ConfigError(f"Failed to read config file: {exc}") from exc
+        msg = f"Failed to read config file: {exc}"
+        raise ConfigError(msg) from exc
+    else:
+        return data
 
 
 def _parse_affine_params(value: str) -> AffineParams:
     parts = value.split(",")
-    if len(parts) != 6:
-        raise ConfigError(
-            "Affine params must have 6 comma-separated values a,b,c,d,e,f"
-        )
+    if len(parts) != AFFINE_PARAM_COUNT:
+        msg = "Affine params must have 6 comma-separated values a,b,c,d,e,f"
+        _raise_config(msg)
 
     try:
         a, b, c, d, e, f = (float(p.strip()) for p in parts)
     except ValueError as exc:
-        raise ConfigError(f"Affine params must be floats: {value}") from exc
+        msg = f"Affine params must be floats: {value}"
+        raise ConfigError(msg) from exc
 
     return AffineParams(a=a, b=b, c=c, d=d, e=e, f=f)
 
@@ -109,39 +126,56 @@ def _parse_affine_params(value: str) -> AffineParams:
 def _parse_functions(value: str) -> list[FunctionConfig]:
     functions: list[FunctionConfig] = []
 
-    for item in value.split(","):
-        item = item.strip()
+    for raw_item in value.split(","):
+        item = raw_item.strip()
         if not item:
             continue
 
         if ":" not in item:
-            raise ConfigError(f"Function spec must be name:weight, got: {item}")
+            msg = f"Function spec must be name:weight, got: {item}"
+            _raise_config(msg)
 
         name, weight_str = item.split(":", 1)
         name = name.strip()
+
         try:
             weight = float(weight_str.strip())
         except ValueError as exc:
-            raise ConfigError(
-                f"Invalid weight for function '{name}': {weight_str}"
-            ) from exc
+            msg = f"Invalid weight for function '{name}': {weight_str}"
+            raise ConfigError(msg) from exc
 
         functions.append(FunctionConfig(name=name, weight=weight))
 
     if not functions:
-        raise ConfigError("At least one function must be specified")
+        msg = "At least one function must be specified"
+        _raise_config(msg)
 
     return functions
 
 
-def _apply_json_to_config(config: Config, data: dict) -> None:
-    size = data.get("size")
-    if isinstance(size, dict):
-        if "width" in size:
-            config.size.width = int(size["width"])
-        if "height" in size:
-            config.size.height = int(size["height"])
+def _as_dict(value: object) -> JsonMapping | None:
+    return value if isinstance(value, dict) else None
 
+
+def _as_list(value: object) -> list[object] | None:
+    return value if isinstance(value, list) else None
+
+
+def _apply_size(config: Config, data: JsonMapping) -> None:
+    size = _as_dict(data.get("size"))
+    if size is None:
+        return
+
+    width = size.get("width")
+    height = size.get("height")
+
+    if width is not None:
+        config.size.width = int(width)
+    if height is not None:
+        config.size.height = int(height)
+
+
+def _apply_scalar_fields(config: Config, data: JsonMapping) -> None:
     if "iteration_count" in data:
         config.iteration_count = int(data["iteration_count"])
 
@@ -154,50 +188,6 @@ def _apply_json_to_config(config: Config, data: dict) -> None:
     if "seed" in data:
         config.seed = float(data["seed"])
 
-    affine = data.get("affine_params")
-    if isinstance(affine, dict):
-        config.affine_params = AffineParams(
-            a=float(affine.get("a", config.affine_params.a)),
-            b=float(affine.get("b", config.affine_params.b)),
-            c=float(affine.get("c", config.affine_params.c)),
-            d=float(affine.get("d", config.affine_params.d)),
-            e=float(affine.get("e", config.affine_params.e)),
-            f=float(affine.get("f", config.affine_params.f)),
-        )
-
-    funcs = data.get("functions")
-    if isinstance(funcs, list):
-        parsed: list[FunctionConfig] = []
-        for item in funcs:
-            if not isinstance(item, dict):
-                continue
-            name = item.get("name")
-            weight = item.get("weight")
-            if name is None or weight is None:
-                continue
-
-            affine_params_dict = item.get("affine_params")
-            affine_params: AffineParams | None = None
-            if isinstance(affine_params_dict, dict):
-                affine_params = AffineParams(
-                    a=float(affine_params_dict.get("a", 1.0)),
-                    b=float(affine_params_dict.get("b", 0.0)),
-                    c=float(affine_params_dict.get("c", 0.0)),
-                    d=float(affine_params_dict.get("d", 0.0)),
-                    e=float(affine_params_dict.get("e", 1.0)),
-                    f=float(affine_params_dict.get("f", 0.0)),
-                )
-
-            parsed.append(
-                FunctionConfig(
-                    name=str(name),
-                    weight=float(weight),
-                    affine_params=affine_params,
-                )
-            )
-        if parsed:
-            config.functions = parsed
-
     if "gamma_correction" in data:
         config.gamma_correction = bool(data["gamma_correction"])
 
@@ -208,88 +198,157 @@ def _apply_json_to_config(config: Config, data: dict) -> None:
         config.symmetry_level = int(data["symmetry_level"])
 
 
-def build_config(cli_args: argparse.Namespace) -> Config:
+def _apply_global_affine(config: Config, data: JsonMapping) -> None:
+    affine = _as_dict(data.get("affine_params"))
+    if affine is None:
+        return
+
+    config.affine_params = AffineParams(
+        a=float(affine.get("a", config.affine_params.a)),
+        b=float(affine.get("b", config.affine_params.b)),
+        c=float(affine.get("c", config.affine_params.c)),
+        d=float(affine.get("d", config.affine_params.d)),
+        e=float(affine.get("e", config.affine_params.e)),
+        f=float(affine.get("f", config.affine_params.f)),
+    )
+
+
+def _parse_affine_params_dict(affine_dict: JsonMapping) -> AffineParams:
+    return AffineParams(
+        a=float(affine_dict.get("a", 1.0)),
+        b=float(affine_dict.get("b", 0.0)),
+        c=float(affine_dict.get("c", 0.0)),
+        d=float(affine_dict.get("d", 0.0)),
+        e=float(affine_dict.get("e", 1.0)),
+        f=float(affine_dict.get("f", 0.0)),
+    )
+
+
+def _apply_functions_from_json(config: Config, data: JsonMapping) -> None:
+    funcs = _as_list(data.get("functions"))
+    if funcs is None:
+        return
+
+    parsed: list[FunctionConfig] = []
+
+    for item in funcs:
+        obj = _as_dict(item)
+        if obj is None:
+            continue
+
+        name = obj.get("name")
+        weight = obj.get("weight")
+        if name is None or weight is None:
+            continue
+
+        affine_params: AffineParams | None = None
+        affine_dict = _as_dict(obj.get("affine_params"))
+        if affine_dict is not None:
+            affine_params = _parse_affine_params_dict(affine_dict)
+
+        parsed.append(
+            FunctionConfig(
+                name=str(name),
+                weight=float(weight),
+                affine_params=affine_params,
+            )
+        )
+
+    if parsed:
+        config.functions = parsed
+
+
+def _apply_json_to_config(config: Config, data: JsonMapping) -> None:
+    _apply_size(config, data)
+    _apply_scalar_fields(config, data)
+    _apply_global_affine(config, data)
+    _apply_functions_from_json(config, data)
+
+
+def _apply_cli_to_config(config: Config, cli_args: "argparse.Namespace") -> None:
+    """Apply CLI overrides to config.
+
+    Order:
+    1) size (nested)
+    2) scalar fields
+    3) flags and parsed structures
+    """
+    if cli_args.width is not None:
+        config.size.width = cli_args.width
+    if cli_args.height is not None:
+        config.size.height = cli_args.height
+
+    overrides: dict[str, object] = {
+        "iteration_count": cli_args.iteration_count,
+        "output_path": cli_args.output_path,
+        "threads": cli_args.threads,
+        "seed": cli_args.seed,
+        "gamma": cli_args.gamma,
+        "symmetry_level": cli_args.symmetry_level,
+    }
+    for attr, value in overrides.items():
+        if value is not None:
+            setattr(config, attr, value)
+
+    if cli_args.gamma_correction:
+        config.gamma_correction = True
+    if cli_args.affine_params:
+        config.affine_params = _parse_affine_params(cli_args.affine_params)
+    if cli_args.functions:
+        config.functions = _parse_functions(cli_args.functions)
+
+
+def build_config(cli_args: "argparse.Namespace") -> Config:
     """Merge defaults, JSON config (if provided) and CLI into final Config."""
     config = Config(
         size=SizeConfig(),
-        iteration_count=2500,
-        output_path="result.png",
-        threads=1,
-        seed=5.1234,
-        functions=[FunctionConfig(name="swirl", weight=1.0)],
+        iteration_count=DEFAULT_ITERATION_COUNT,
+        output_path=DEFAULT_OUTPUT_PATH,
+        threads=DEFAULT_THREADS,
+        seed=DEFAULT_SEED,
+        functions=[FunctionConfig(name=DEFAULT_FUNCTION, weight=1.0)],
         affine_params=AffineParams(),
+        gamma=DEFAULT_GAMMA,
+        symmetry_level=DEFAULT_SYMMETRY_LEVEL,
     )
 
     if cli_args.config:
         json_data = load_json_config(cli_args.config)
         _apply_json_to_config(config, json_data)
 
-    if cli_args.width is not None:
-        config.size.width = cli_args.width
-
-    if cli_args.height is not None:
-        config.size.height = cli_args.height
-
-    if cli_args.iteration_count is not None:
-        config.iteration_count = cli_args.iteration_count
-
-    if cli_args.output_path is not None:
-        config.output_path = cli_args.output_path
-
-    if cli_args.threads is not None:
-        config.threads = cli_args.threads
-
-    if cli_args.seed is not None:
-        config.seed = cli_args.seed
-
-    if cli_args.affine_params:
-        config.affine_params = _parse_affine_params(cli_args.affine_params)
-
-    if cli_args.functions:
-        config.functions = _parse_functions(cli_args.functions)
-
-    if cli_args.gamma_correction:
-        config.gamma_correction = True
-
-    if cli_args.gamma is not None:
-        config.gamma = cli_args.gamma
-
-    if cli_args.symmetry_level is not None:
-        config.symmetry_level = cli_args.symmetry_level
-
+    _apply_cli_to_config(config, cli_args)
     return config
 
 
 def validate_config(config: Config) -> None:
-    """Validate configuration values.
-
-    Args:
-        config: Configuration object to validate.
-
-    Raises:
-        ConfigError: If any configuration field is invalid or inconsistent.
-
-    """
+    """Validate configuration values."""
     if config.size.width <= 0 or config.size.height <= 0:
-        raise ConfigError("Width and height must be positive integers")
+        msg = "Width and height must be positive integers"
+        _raise_config(msg)
 
     if config.iteration_count <= 0:
-        raise ConfigError("Iteration count must be positive integer")
+        msg = "Iteration count must be a positive integer"
+        _raise_config(msg)
 
     if config.threads <= 0:
-        raise ConfigError("Threads must be positive integer")
+        msg = "Threads must be a positive integer"
+        _raise_config(msg)
 
     if not config.functions:
-        raise ConfigError("At least one transform function must be configured")
+        msg = "At least one transform function must be configured"
+        _raise_config(msg)
 
     if all(f.weight == 0.0 for f in config.functions):
-        raise ConfigError("At least one function must have non-zero weight")
+        msg = "At least one function must have a non-zero weight"
+        _raise_config(msg)
 
     if config.gamma <= 0:
-        raise ConfigError("Gamma must be positive")
+        msg = "Gamma must be positive"
+        _raise_config(msg)
 
     if config.symmetry_level < 1:
-        raise ConfigError("Symmetry level must be >= 1")
+        msg = "Symmetry level must be >= 1"
+        _raise_config(msg)
 
     # Local import to avoid circular dependency with transforms module.
     from .transforms import compile_variations
