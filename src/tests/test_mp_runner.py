@@ -83,10 +83,11 @@ def test_generate_flame_multi_process_aggregates_worker_results(monkeypatch):
     config = _make_base_config(threads=2)
     config.iteration_count = 10
 
-    def fake_worker_task(arg):
-        _, idx = arg
+    def fake_worker_task(cfg):
         shape = (3, 4)
         hist = np.ones(shape, dtype=np.float64)
+        idx = int(round(cfg.seed - config.seed))
+
         if idx == 0:
             colors = np.zeros(shape + (3,), dtype=np.float64)
         else:
