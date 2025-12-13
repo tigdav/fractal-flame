@@ -34,6 +34,11 @@ def _cooldown(seconds: float = 0.3) -> None:
 
 
 def run_symmetry_benchmark() -> None:
+    """Run symmetry benchmark for several symmetry_level values.
+
+    Warms up once, then measures generate_flame() runtime for each symmetry level
+    under a heavy fixed config, printing a small summary table.
+    """
     threads = 4
     symmetry_levels = [1, 2, 3, 4, 6, 8]
     results: list[tuple[int, float]] = []

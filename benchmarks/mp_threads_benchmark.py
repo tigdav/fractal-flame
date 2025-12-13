@@ -34,6 +34,11 @@ def _cooldown(seconds: float = 0.3) -> None:
 
 
 def run_threads_benchmark() -> None:
+    """Run worker-count benchmark for generate_flame().
+
+    Warms up once, then measures runtime for several thread counts under a heavy
+    fixed config and prints a simple speedup table.
+    """
     thread_counts = [1, 2, 4, 8]
     results: list[tuple[int, float]] = []
 

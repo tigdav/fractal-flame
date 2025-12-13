@@ -10,6 +10,9 @@ import gc
 import statistics
 import time
 
+import numpy as np
+from numpy.typing import NDArray
+
 from flame.config import AffineParams, Config, FunctionConfig, SizeConfig
 from flame.mp_runner import generate_flame
 from flame.render import render_image
@@ -35,7 +38,12 @@ def _cooldown(seconds: float = 0.2) -> None:
     time.sleep(seconds)
 
 
-def _measure_render(config: Config, hist, colors, repeats: int) -> list[float]:
+def _measure_render(
+    config: Config,
+    hist: NDArray[np.float64],
+    colors: NDArray[np.float64],
+    repeats: int,
+) -> list[float]:
     render_image(config, hist, colors)
     _cooldown(0.05)
 
@@ -45,6 +53,7 @@ def _measure_render(config: Config, hist, colors, repeats: int) -> list[float]:
         render_image(config, hist, colors)
         timings.append(time.perf_counter() - start)
     return timings
+
 
 
 def _print_stats(label: str, timings: list[float]) -> None:
@@ -58,6 +67,11 @@ def _print_stats(label: str, timings: list[float]) -> None:
 
 
 def run_render_gamma_benchmark() -> None:
+    """Run render benchmark comparing gamma correction OFF vs ON.
+
+    Uses a fixed histogram/colors generated once, then measures render_image()
+    runtime for both modes and prints summary stats.
+    """
     workers = 4
     repeats = 7
 
@@ -68,7 +82,8 @@ def run_render_gamma_benchmark() -> None:
 
     print(
         f"Config: {gen_cfg.size.width}x{gen_cfg.size.height}, "
-        f"iters={gen_cfg.iteration_count}, fn=swirl, workers={workers}, repeats={repeats}"
+        f"iters={gen_cfg.iteration_count}, fn=swirl, "
+        f"workers={workers}, repeats={repeats}"
     )
 
     cfg_off = _make_base_config(threads=workers, gamma_correction=False)
