@@ -1,4 +1,5 @@
 from collections.abc import Iterable
+from dataclasses import dataclass
 
 import numpy as np
 from numpy.typing import NDArray
@@ -15,37 +16,52 @@ FUNCTION_COLORS = {
 }
 
 
+@dataclass(frozen=True)
+class Bounds:
+    """Rectangular bounds of the fractal coordinate space."""
+
+    x_min: float
+    x_max: float
+    y_min: float
+    y_max: float
+
+
 def _map_to_pixel(
     x: float,
     y: float,
-    width: int,
-    height: int,
-    x_min: float,
-    x_max: float,
-    y_min: float,
-    y_max: float,
+    size: tuple[int, int],
+    bounds: Bounds,
 ) -> tuple[int, int] | None:
     """Map fractal coordinates to pixel coordinates.
 
     Args:
         x (float): X coordinate in fractal space.
         y (float): Y coordinate in fractal space.
-        width (int): Image width in pixels.
-        height (int): Image height in pixels.
-        x_min (float): Minimum X in fractal space.
-        x_max (float): Maximum X in fractal space.
-        y_min (float): Minimum Y in fractal space.
-        y_max (float): Maximum Y in fractal space.
+        size (tuple[int, int]): Image size in pixels as (width, height).
+        bounds (Bounds): Fractal space bounds.
 
     Returns:
         tuple[int, int] | None: Pixel coordinates (col, row) or None if out of bounds.
 
     """
-    if x < x_min or x > x_max or y < y_min or y > y_max:
+    width, height = size
+
+    # Guard against degenerate bounds (avoid division by zero).
+    dx = bounds.x_max - bounds.x_min
+    dy = bounds.y_max - bounds.y_min
+    if dx == 0.0 or dy == 0.0:
         return None
 
-    nx = (x - x_min) / (x_max - x_min)
-    ny = (y - y_min) / (y_max - y_min)
+    if (
+        x < bounds.x_min
+        or x > bounds.x_max
+        or y < bounds.y_min
+        or y > bounds.y_max
+    ):
+        return None
+
+    nx = (x - bounds.x_min) / dx
+    ny = (y - bounds.y_min) / dy
 
     col = int(nx * (width - 1))
     row = int((1.0 - ny) * (height - 1))
@@ -79,12 +95,14 @@ def render_points(
     """
     width = config.size.width
     height = config.size.height
+    bounds = Bounds(x_min=x_min, x_max=x_max, y_min=y_min, y_max=y_max)
 
     image = Image.new("RGB", (width, height), (0, 0, 0))
     pixels = image.load()
 
+    size = (width, height)
     for x, y, func_name in points:
-        mapped = _map_to_pixel(x, y, width, height, x_min, x_max, y_min, y_max)
+        mapped = _map_to_pixel(x, y, size, bounds)
         if mapped is None:
             continue
 
