@@ -52,12 +52,7 @@ def _map_to_pixel(
     if dx == 0.0 or dy == 0.0:
         return None
 
-    if (
-        x < bounds.x_min
-        or x > bounds.x_max
-        or y < bounds.y_min
-        or y > bounds.y_max
-    ):
+    if x < bounds.x_min or x > bounds.x_max or y < bounds.y_min or y > bounds.y_max:
         return None
 
     nx = (x - bounds.x_min) / dx

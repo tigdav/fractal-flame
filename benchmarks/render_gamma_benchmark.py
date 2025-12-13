@@ -55,7 +55,6 @@ def _measure_render(
     return timings
 
 
-
 def _print_stats(label: str, timings: list[float]) -> None:
     print(
         f"{label:<14} | "
