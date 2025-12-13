@@ -68,6 +68,11 @@ ignore = [
     "SLF001", # Checks for accesses on "private" class members.
     "FBT001", # Checks for the use of boolean positional arguments in function definitions, as determined by the presence of a bool type hint.
 ]
+"src/tests/**.py" = [
+    "S101",   # allow assert
+    "SLF001", # allow private access
+    "FBT001", # allow boolean positional args
+]
 
 [tool.ruff.lint.isort]
 split-on-trailing-comma = false
