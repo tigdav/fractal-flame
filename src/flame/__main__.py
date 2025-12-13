@@ -59,13 +59,14 @@ def main() -> int:
         image.save(output_path, format="PNG")
         logger.info("Image saved to %s", output_path)
 
-        return 0
     except ConfigError as exc:
-        logger.error("Configuration error: %s", exc)
+        logger.error("Configuration error: %s", exc)  # noqa: TRY400
         return 1
-    except Exception as exc:
-        logger.exception("Unhandled error: %s", exc)
+    except Exception:
+        logger.exception("Unhandled error")
         return 1
+    else:
+        return 0
 
 
 if __name__ == "__main__":
