@@ -10,12 +10,16 @@ class ConfigError(Exception):
 
 @dataclass
 class SizeConfig:
+    """Image size configuration."""
+
     width: int = 1920
     height: int = 1080
 
 
 @dataclass
 class AffineParams:
+    """Affine transformation parameters (a, b, c, d, e, f)."""
+
     a: float = 1.0
     b: float = 0.0
     c: float = 0.0
@@ -26,6 +30,15 @@ class AffineParams:
 
 @dataclass
 class FunctionConfig:
+    """Single variation configuration.
+
+    Attributes:
+        name: Variation name (e.g., "swirl").
+        weight: Selection weight used when choosing a variation.
+        affine_params: Optional per-function affine parameters.
+
+    """
+
     name: str
     weight: float
     affine_params: AffineParams | None = None
@@ -33,6 +46,8 @@ class FunctionConfig:
 
 @dataclass
 class Config:
+    """Full runtime configuration for the fractal flame generator."""
+
     size: SizeConfig
     iteration_count: int
     output_path: str
@@ -246,6 +261,15 @@ def build_config(cli_args: argparse.Namespace) -> Config:
 
 
 def validate_config(config: Config) -> None:
+    """Validate configuration values.
+
+    Args:
+        config: Configuration object to validate.
+
+    Raises:
+        ConfigError: If any configuration field is invalid or inconsistent.
+
+    """
     if config.size.width <= 0 or config.size.height <= 0:
         raise ConfigError("Width and height must be positive integers")
 

@@ -9,6 +9,12 @@ from .render import render_image
 
 
 def setup_logging() -> logging.Logger:
+    """Configure and return the application logger.
+
+    Returns:
+        A configured logger instance for the application.
+
+    """
     logging.basicConfig(
         level=logging.INFO,
         format="%(asctime)s [%(levelname)s] %(name)s: %(message)s",
@@ -17,6 +23,12 @@ def setup_logging() -> logging.Logger:
 
 
 def main() -> int:
+    """Run the CLI application.
+
+    Returns:
+        Exit code: 0 on success, 1 on configuration or runtime error.
+
+    """
     logger = setup_logging()
 
     try:

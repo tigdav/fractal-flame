@@ -9,10 +9,30 @@ VariationFunc = Callable[[float, float], tuple[float, float]]
 
 
 def linear(x: float, y: float) -> tuple[float, float]:
+    """Linear variation (identity transform).
+
+    Args:
+        x: Input x coordinate.
+        y: Input y coordinate.
+
+    Returns:
+        Transformed (x, y) coordinates.
+
+    """
     return x, y
 
 
 def swirl(x: float, y: float) -> tuple[float, float]:
+    """Swirl variation.
+
+    Args:
+        x: Input x coordinate.
+        y: Input y coordinate.
+
+    Returns:
+        Transformed (x, y) coordinates.
+
+    """
     r2 = x * x + y * y
     sin_r2 = math.sin(r2)
     cos_r2 = math.cos(r2)
@@ -22,6 +42,16 @@ def swirl(x: float, y: float) -> tuple[float, float]:
 
 
 def horseshoe(x: float, y: float) -> tuple[float, float]:
+    """Horseshoe variation.
+
+    Args:
+        x: Input x coordinate.
+        y: Input y coordinate.
+
+    Returns:
+        Transformed (x, y) coordinates.
+
+    """
     r = math.hypot(x, y)
     if r == 0.0:
         return 0.0, 0.0
@@ -31,6 +61,16 @@ def horseshoe(x: float, y: float) -> tuple[float, float]:
 
 
 def spherical(x: float, y: float) -> tuple[float, float]:
+    """Spherical variation.
+
+    Args:
+        x: Input x coordinate.
+        y: Input y coordinate.
+
+    Returns:
+        Transformed (x, y) coordinates.
+
+    """
     r2 = x * x + y * y
     if r2 == 0.0:
         return 0.0, 0.0
@@ -41,6 +81,16 @@ def spherical(x: float, y: float) -> tuple[float, float]:
 
 
 def sinusoidal(x: float, y: float) -> tuple[float, float]:
+    """Sinusoidal variation.
+
+    Args:
+        x: Input x coordinate.
+        y: Input y coordinate.
+
+    Returns:
+        Transformed (x, y) coordinates.
+
+    """
     return math.sin(x), math.sin(y)
 
 
@@ -63,6 +113,8 @@ VARIATION_BASE_COLORS: dict[str, tuple[float, float, float]] = {
 
 @dataclass
 class CompiledVariation:
+    """Pre-compiled variation with affine transform and base color."""
+
     name: str
     weight: float
     func: VariationFunc
