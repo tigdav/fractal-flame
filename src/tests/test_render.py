@@ -2,7 +2,7 @@ import numpy as np
 from PIL import Image
 
 from flame.config import AffineParams, Config, SizeConfig
-from flame.render import _map_to_pixel, render_image, render_points
+from flame.render import Bounds, _map_to_pixel, render_image, render_points
 
 
 def _make_config(
@@ -27,15 +27,13 @@ def _make_config(
 
 def test_map_to_pixel_inside_returns_expected_indices():
     width, height = 100, 50
+    bounds = Bounds(x_min=-1.0, x_max=1.0, y_min=-1.0, y_max=1.0)
+
     col_row = _map_to_pixel(
         x=0.0,
         y=0.0,
-        width=width,
-        height=height,
-        x_min=-1.0,
-        x_max=1.0,
-        y_min=-1.0,
-        y_max=1.0,
+        size=(width, height),
+        bounds=bounds,
     )
 
     assert col_row is not None
@@ -45,15 +43,13 @@ def test_map_to_pixel_inside_returns_expected_indices():
 
 
 def test_map_to_pixel_outside_returns_none():
+    bounds = Bounds(x_min=-1.0, x_max=1.0, y_min=-1.0, y_max=1.0)
+
     result = _map_to_pixel(
         x=2.0,
         y=0.0,
-        width=100,
-        height=50,
-        x_min=-1.0,
-        x_max=1.0,
-        y_min=-1.0,
-        y_max=1.0,
+        size=(100, 50),
+        bounds=bounds,
     )
     assert result is None
 
@@ -67,7 +63,11 @@ def test_render_points_sets_expected_color_and_size():
     assert isinstance(image, Image.Image)
     assert image.size == (8, 8)
 
-    col, row = _map_to_pixel(0.0, 0.0, 8, 8, -1.0, 1.0, -1.0, 1.0)
+    bounds = Bounds(x_min=-1.0, x_max=1.0, y_min=-1.0, y_max=1.0)
+    mapped = _map_to_pixel(0.0, 0.0, (8, 8), bounds)
+    assert mapped is not None
+
+    col, row = mapped
     pixel = image.getpixel((col, row))
     assert pixel == (255, 120, 120)
 
