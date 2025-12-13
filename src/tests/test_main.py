@@ -5,7 +5,7 @@ import numpy as np
 from PIL import Image
 
 from flame.config import AffineParams, Config, ConfigError, FunctionConfig, SizeConfig
-import main as main_module
+import flame.__main__ as main_module
 
 
 def _make_config(output_path: str) -> Config:
