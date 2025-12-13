@@ -72,6 +72,12 @@ ignore = [
     "S101",   # allow assert
     "SLF001", # allow private access
     "FBT001", # allow boolean positional args
+    "FBT002", # Allow boolean default values in test functions.
+    "D",      # Do not require docstrings in test modules and functions.
+    "ANN",    # Do not require type annotations in tests (pytest fixtures, monkeypatch, etc.).
+    "PLR2004",# Allow magic numbers in tests.
+    "PT006",  # Allow non-tuple parameter names in pytest.mark.parametrize.
+    "ARG001", # Allow unused function arguments in tests (fixtures, callbacks).
 ]
 
 [tool.ruff.lint.isort]
