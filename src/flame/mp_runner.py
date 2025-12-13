@@ -37,25 +37,16 @@ def _build_worker_config(config: Config, iterations: int, seed_offset: int) -> C
     )
 
 
-def _worker_task(args: Tuple[Config, int]) -> Tuple[NDArray[np.float64], NDArray[np.float64]]:
+def _worker_task(config: Config) -> Tuple[NDArray[np.float64], NDArray[np.float64]]:
     """Worker entry point for multiprocessing.
 
     Args:
-        args: Tuple of (base_config, worker_index).
+        config: Per-worker configuration.
 
     Returns:
         Tuple of (histogram, colors) for this worker.
     """
-    base_config, worker_index = args
-    iterations = base_config.iteration_count
-
-    worker_config = _build_worker_config(
-        config=base_config,
-        iterations=iterations,
-        seed_offset=worker_index,
-    )
-
-    return generate_flame_single(worker_config)
+    return generate_flame_single(config)
 
 
 def _split_iterations(total: int, workers: int) -> List[int]:
@@ -102,17 +93,17 @@ def generate_flame(config: Config) -> tuple[NDArray[np.float64], NDArray[np.floa
 
     iteration_chunks = _split_iterations(config.iteration_count, threads)
 
-    worker_args: List[Tuple[Config, int]] = []
+    worker_configs: List[Config] = []
     for idx, chunk_iters in enumerate(iteration_chunks):
         worker_config = _build_worker_config(
             config=config,
             iterations=chunk_iters,
             seed_offset=idx,
         )
-        worker_args.append((worker_config, idx))
+        worker_configs.append(worker_config)
 
     with Pool(processes=threads) as pool:
-        results = pool.map(_worker_task, worker_args)
+        results = pool.map(_worker_task, worker_configs)
 
     hist_list: List[NDArray[np.float64]] = []
     color_sum_list: List[NDArray[np.float64]] = []
