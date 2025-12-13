@@ -198,7 +198,7 @@ def build_config(cli_args: argparse.Namespace) -> Config:
         output_path="result.png",
         threads=1,
         seed=5.1234,
-        functions=[],
+        functions=[FunctionConfig(name="swirl", weight=1.0)],
         affine_params=AffineParams(),
     )
 
