@@ -19,20 +19,20 @@ from flame.config import (
 
 def _make_empty_args(**overrides):
     """Build argparse-like namespace with all expected fields."""
-    base = dict(
-        config=None,
-        width=None,
-        height=None,
-        iteration_count=None,
-        output_path=None,
-        threads=None,
-        seed=None,
-        affine_params=None,
-        functions=None,
-        gamma_correction=False,
-        gamma=None,
-        symmetry_level=None,
-    )
+    base = {
+        "config": None,
+        "width": None,
+        "height": None,
+        "iteration_count": None,
+        "output_path": None,
+        "threads": None,
+        "seed": None,
+        "affine_params": None,
+        "functions": None,
+        "gamma_correction": False,
+        "gamma": None,
+        "symmetry_level": None,
+    }
     base.update(overrides)
     return SimpleNamespace(**base)
 

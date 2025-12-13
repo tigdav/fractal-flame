@@ -78,7 +78,8 @@ def test_main_returns_one_on_config_error(monkeypatch, caplog):
     monkeypatch.setattr(main_module, "parse_args", lambda: SimpleNamespace(dummy=True))
 
     def fake_build_config(args):
-        raise ConfigError("bad config")
+        msg = "bad config"
+        raise ConfigError(msg)
 
     monkeypatch.setattr(main_module, "build_config", fake_build_config)
 
@@ -94,7 +95,8 @@ def test_main_returns_one_on_unhandled_exception(monkeypatch, caplog):
     monkeypatch.setattr(main_module, "parse_args", lambda: SimpleNamespace(dummy=True))
 
     def fake_build_config(args):
-        raise RuntimeError("boom")
+        msg = "boom"
+        raise RuntimeError(msg)
 
     monkeypatch.setattr(main_module, "build_config", fake_build_config)
 

@@ -89,9 +89,9 @@ def test_generate_flame_multi_process_aggregates_worker_results(monkeypatch):
         idx = int(round(cfg.seed - config.seed))
 
         if idx == 0:
-            colors = np.zeros(shape + (3,), dtype=np.float64)
+            colors = np.zeros((*shape, 3), dtype=np.float64)
         else:
-            colors = np.ones(shape + (3,), dtype=np.float64)
+            colors = np.ones((*shape, 3), dtype=np.float64)
         return hist, colors
 
     class FakePool:

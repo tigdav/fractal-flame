@@ -145,7 +145,8 @@ def compile_variations(
     for fn in functions:
         func = VARIATIONS.get(fn.name)
         if func is None:
-            raise KeyError(f"Unknown variation name: {fn.name}")
+            msg = f"Unknown variation name: {fn.name}"
+            raise KeyError(msg)
 
         params = fn.affine_params or global_affine
         affine = AffineTransform.from_params(params)
