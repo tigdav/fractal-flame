@@ -141,7 +141,7 @@ def test_generate_flame_multi_thread_faster_than_sequential(monkeypatch):
         time.sleep(sleep_per_worker)
         shape = (cfg.size.height, cfg.size.width)
         hist = np.ones(shape, dtype=np.float64)
-        colors = np.zeros(shape + (3,), dtype=np.float64)
+        colors = np.zeros((*shape, 3), dtype=np.float64)
         return hist, colors
 
     monkeypatch.setattr(mp_runner, "generate_flame_single", fake_generate_single)
