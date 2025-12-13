@@ -228,7 +228,10 @@ def test_build_config_uses_defaults_without_cli_or_json():
     assert isinstance(config.affine_params, AffineParams)
     assert config.affine_params == AffineParams()
 
-    assert config.functions == []
+    assert len(config.functions) == 1
+    assert config.functions[0].name == "swirl"
+    assert config.functions[0].weight == pytest.approx(1.0)
+    assert config.functions[0].affine_params is None
 
     assert config.gamma_correction is False
     assert config.gamma == pytest.approx(2.2)
