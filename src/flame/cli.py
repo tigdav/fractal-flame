@@ -55,7 +55,7 @@ def parse_args() -> argparse.Namespace:
         "-ap",
         "--affine-params",
         type=str,
-        help="Affine params in format a,b,c,d,e,f",
+        help="Affine params: a,b,c,d,e,f or multiple sets separated by '/'",
     )
     parser.add_argument(
         "-f",

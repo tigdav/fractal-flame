@@ -108,7 +108,7 @@ def load_json_config(path: str) -> JsonMapping:
         return data
 
 
-def _parse_affine_params(value: str) -> AffineParams:
+def _parse_affine_params_single(value: str) -> AffineParams:
     parts = value.split(",")
     if len(parts) != AFFINE_PARAM_COUNT:
         msg = "Affine params must have 6 comma-separated values a,b,c,d,e,f"
@@ -121,6 +121,29 @@ def _parse_affine_params(value: str) -> AffineParams:
         raise ConfigError(msg) from exc
 
     return AffineParams(a=a, b=b, c=c, d=d, e=e, f=f)
+
+def _parse_affine_params_cli(value: str) -> list[AffineParams]:
+    raw_sets = [s.strip() for s in value.split("/") if s.strip()]
+    if not raw_sets:
+        _raise_config("Affine params cannot be empty")
+
+    return [_parse_affine_params_single(s) for s in raw_sets]
+
+
+def _apply_affine_sets(config: Config, affines: list[AffineParams], *, source: str) -> None:
+    if len(affines) == 1:
+        config.affine_params = affines[0]
+        return
+
+    if len(affines) == len(config.functions):
+        for fn, params in zip(config.functions, affines, strict=False):
+            fn.affine_params = params
+        return
+
+    _raise_config(
+        f"{source}: expected 1 affine set (global) or {len(config.functions)} sets "
+        f"(one per function), got {len(affines)}"
+    )
 
 
 def _parse_functions(value: str) -> list[FunctionConfig]:
@@ -199,18 +222,33 @@ def _apply_scalar_fields(config: Config, data: JsonMapping) -> None:
 
 
 def _apply_global_affine(config: Config, data: JsonMapping) -> None:
-    affine = _as_dict(data.get("affine_params"))
-    if affine is None:
+    affine_obj = data.get("affine_params")
+
+    affine_dict = _as_dict(affine_obj)
+    if affine_dict is not None:
+        config.affine_params = AffineParams(
+            a=float(affine_dict.get("a", config.affine_params.a)),
+            b=float(affine_dict.get("b", config.affine_params.b)),
+            c=float(affine_dict.get("c", config.affine_params.c)),
+            d=float(affine_dict.get("d", config.affine_params.d)),
+            e=float(affine_dict.get("e", config.affine_params.e)),
+            f=float(affine_dict.get("f", config.affine_params.f)),
+        )
         return
 
-    config.affine_params = AffineParams(
-        a=float(affine.get("a", config.affine_params.a)),
-        b=float(affine.get("b", config.affine_params.b)),
-        c=float(affine.get("c", config.affine_params.c)),
-        d=float(affine.get("d", config.affine_params.d)),
-        e=float(affine.get("e", config.affine_params.e)),
-        f=float(affine.get("f", config.affine_params.f)),
-    )
+    affine_list = _as_list(affine_obj)
+    if affine_list is None:
+        return
+
+    parsed: list[AffineParams] = []
+    for item in affine_list:
+        obj = _as_dict(item)
+        if obj is None:
+            _raise_config("JSON affine_params must be an array of objects")
+        parsed.append(_parse_affine_params_dict(obj))
+
+    _apply_affine_sets(config, parsed, source="JSON affine_params")
+
 
 
 def _parse_affine_params_dict(affine_dict: JsonMapping) -> AffineParams:
@@ -261,8 +299,8 @@ def _apply_functions_from_json(config: Config, data: JsonMapping) -> None:
 def _apply_json_to_config(config: Config, data: JsonMapping) -> None:
     _apply_size(config, data)
     _apply_scalar_fields(config, data)
-    _apply_global_affine(config, data)
     _apply_functions_from_json(config, data)
+    _apply_global_affine(config, data)
 
 
 def _apply_cli_to_config(config: Config, cli_args: "argparse.Namespace") -> None:
@@ -292,11 +330,12 @@ def _apply_cli_to_config(config: Config, cli_args: "argparse.Namespace") -> None
 
     if cli_args.gamma_correction:
         config.gamma_correction = True
-    if cli_args.affine_params:
-        config.affine_params = _parse_affine_params(cli_args.affine_params)
     if cli_args.functions:
         config.functions = _parse_functions(cli_args.functions)
 
+    if cli_args.affine_params:
+        affine_sets = _parse_affine_params_cli(cli_args.affine_params)
+        _apply_affine_sets(config, affine_sets, source="CLI --affine-params")
 
 def build_config(cli_args: "argparse.Namespace") -> Config:
     """Merge defaults, JSON config (if provided) and CLI into final Config."""
