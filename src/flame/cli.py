@@ -31,7 +31,7 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument(
         "--seed",
         type=float,
-        help="Initial random seed (default 5.1234)",
+        help="Initial random seed (default 5)",
     )
     parser.add_argument(
         "-i",
