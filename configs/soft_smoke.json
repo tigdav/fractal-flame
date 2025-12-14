@@ -1,0 +1,51 @@
+{
+  "size": {
+    "width": 1920,
+    "height": 1080
+  },
+  "iteration_count": 2600000,
+  "output_path": "examples/out/soft_smoke.png",
+  "threads": 8,
+  "seed": 3.14159,
+  "gamma_correction": true,
+  "gamma": 2.35,
+  "symmetry_level": 1,
+  "functions": [
+    {
+      "name": "sinusoidal",
+      "weight": 0.75,
+      "affine_params": {
+        "a": 0.72,
+        "b": 0.08,
+        "c": -0.08,
+        "d": -0.08,
+        "e": 0.72,
+        "f": 0.04
+      }
+    },
+    {
+      "name": "swirl",
+      "weight": 0.90,
+      "affine_params": {
+        "a": 0.62,
+        "b": -0.12,
+        "c": 0.18,
+        "d": 0.12,
+        "e": 0.62,
+        "f": -0.06
+      }
+    },
+    {
+      "name": "spherical",
+      "weight": 0.25,
+      "affine_params": {
+        "a": 0.80,
+        "b": 0.00,
+        "c": 0.00,
+        "d": 0.00,
+        "e": 0.80,
+        "f": 0.00
+      }
+    }
+  ]
+}

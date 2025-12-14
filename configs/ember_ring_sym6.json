@@ -1,0 +1,51 @@
+{
+  "size": {
+    "width": 1600,
+    "height": 1600
+  },
+  "iteration_count": 2200000,
+  "output_path": "examples/out/ember_ring_sym6.png",
+  "threads": 8,
+  "seed": 21.314,
+  "gamma_correction": true,
+  "gamma": 2.2,
+  "symmetry_level": 6,
+  "functions": [
+    {
+      "name": "horseshoe",
+      "weight": 0.85,
+      "affine_params": {
+        "a": 0.60,
+        "b": -0.18,
+        "c": 0.10,
+        "d": 0.18,
+        "e": 0.60,
+        "f": 0.00
+      }
+    },
+    {
+      "name": "swirl",
+      "weight": 0.90,
+      "affine_params": {
+        "a": 0.56,
+        "b": 0.20,
+        "c": -0.18,
+        "d": -0.20,
+        "e": 0.56,
+        "f": 0.10
+      }
+    },
+    {
+      "name": "spherical",
+      "weight": 0.40,
+      "affine_params": {
+        "a": 0.70,
+        "b": 0.00,
+        "c": 0.00,
+        "d": 0.00,
+        "e": 0.70,
+        "f": -0.12
+      }
+    }
+  ]
+}

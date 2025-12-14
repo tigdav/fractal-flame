@@ -1,0 +1,63 @@
+{
+  "size": {
+    "width": 2000,
+    "height": 2000
+  },
+  "iteration_count": 3800000,
+  "output_path": "examples/out/phoenix_sym11.png",
+  "threads": 8,
+  "seed": 6.666,
+  "gamma_correction": true,
+  "gamma": 2.15,
+  "symmetry_level": 11,
+  "functions": [
+    {
+      "name": "horseshoe",
+      "weight": 0.95,
+      "affine_params": {
+        "a": 0.56,
+        "b": -0.22,
+        "c": 0.24,
+        "d": 0.22,
+        "e": 0.56,
+        "f": 0.00
+      }
+    },
+    {
+      "name": "swirl",
+      "weight": 0.85,
+      "affine_params": {
+        "a": 0.62,
+        "b": 0.18,
+        "c": -0.16,
+        "d": -0.18,
+        "e": 0.62,
+        "f": 0.10
+      }
+    },
+    {
+      "name": "sinusoidal",
+      "weight": 0.45,
+      "affine_params": {
+        "a": 0.60,
+        "b": 0.00,
+        "c": 0.08,
+        "d": 0.00,
+        "e": 0.60,
+        "f": -0.08
+      }
+    },
+    {
+      "name": "spherical",
+      "weight": 0.25,
+      "affine_params": {
+        "a": 0.74,
+        "b": 0.00,
+        "c": 0.00,
+        "d": 0.00,
+        "e": 0.74,
+        "f": 0.00
+      }
+    }
+  ]
+}

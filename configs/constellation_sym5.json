@@ -1,0 +1,51 @@
+{
+  "size": {
+    "width": 1800,
+    "height": 1800
+  },
+  "iteration_count": 3000000,
+  "output_path": "examples/out/constellation_sym5.png",
+  "threads": 8,
+  "seed": 77.007,
+  "gamma_correction": true,
+  "gamma": 2.4,
+  "symmetry_level": 5,
+  "functions": [
+    {
+      "name": "sinusoidal",
+      "weight": 0.80,
+      "affine_params": {
+        "a": 0.66,
+        "b": -0.14,
+        "c": 0.22,
+        "d": 0.14,
+        "e": 0.66,
+        "f": 0.00
+      }
+    },
+    {
+      "name": "spherical",
+      "weight": 0.35,
+      "affine_params": {
+        "a": 0.72,
+        "b": 0.20,
+        "c": -0.08,
+        "d": -0.20,
+        "e": 0.72,
+        "f": 0.06
+      }
+    },
+    {
+      "name": "swirl",
+      "weight": 0.55,
+      "affine_params": {
+        "a": 0.58,
+        "b": 0.10,
+        "c": -0.22,
+        "d": -0.10,
+        "e": 0.58,
+        "f": -0.04
+      }
+    }
+  ]
+}

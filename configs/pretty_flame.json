@@ -1,0 +1,63 @@
+{
+  "size": {
+    "width": 1600,
+    "height": 1600
+  },
+  "iteration_count": 2000000,
+  "output_path": "examples/out/pretty_flame.png",
+  "threads": 8,
+  "seed": 5.1234,
+  "gamma_correction": true,
+  "gamma": 2.2,
+  "symmetry_level": 7,
+  "functions": [
+    {
+      "name": "swirl",
+      "weight": 1.0,
+      "affine_params": {
+        "a": 0.70,
+        "b": -0.35,
+        "c": 0.25,
+        "d": 0.35,
+        "e": 0.70,
+        "f": 0.05
+      }
+    },
+    {
+      "name": "horseshoe",
+      "weight": 0.8,
+      "affine_params": {
+        "a": 0.50,
+        "b": 0.10,
+        "c": -0.30,
+        "d": -0.10,
+        "e": 0.55,
+        "f": 0.20
+      }
+    },
+    {
+      "name": "spherical",
+      "weight": 0.5,
+      "affine_params": {
+        "a": 0.55,
+        "b": 0.25,
+        "c": 0.15,
+        "d": -0.25,
+        "e": 0.50,
+        "f": -0.25
+      }
+    },
+    {
+      "name": "sinusoidal",
+      "weight": 0.35,
+      "affine_params": {
+        "a": 0.60,
+        "b": 0.00,
+        "c": 0.10,
+        "d": 0.00,
+        "e": 0.60,
+        "f": -0.10
+      }
+    }
+  ]
+}

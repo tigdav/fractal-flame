@@ -1,0 +1,51 @@
+{
+  "size": {
+    "width": 1600,
+    "height": 1600
+  },
+  "iteration_count": 2200000,
+  "output_path": "examples/out/spiral_core.png",
+  "threads": 8,
+  "seed": 42.4242,
+  "gamma_correction": true,
+  "gamma": 2.2,
+  "symmetry_level": 1,
+  "functions": [
+    {
+      "name": "swirl",
+      "weight": 1.0,
+      "affine_params": {
+        "a": 0.74,
+        "b": -0.20,
+        "c": 0.10,
+        "d": 0.20,
+        "e": 0.74,
+        "f": 0.00
+      }
+    },
+    {
+      "name": "horseshoe",
+      "weight": 0.70,
+      "affine_params": {
+        "a": 0.56,
+        "b": 0.28,
+        "c": -0.18,
+        "d": -0.28,
+        "e": 0.56,
+        "f": 0.06
+      }
+    },
+    {
+      "name": "spherical",
+      "weight": 0.20,
+      "affine_params": {
+        "a": 0.82,
+        "b": 0.00,
+        "c": 0.00,
+        "d": 0.00,
+        "e": 0.82,
+        "f": 0.00
+      }
+    }
+  ]
+}
