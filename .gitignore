@@ -10,3 +10,6 @@ env/
 
 # Pytest
 .pytest_cache/
+
+# Generated example outputs
+examples/out/
