@@ -122,6 +122,7 @@ def _parse_affine_params_single(value: str) -> AffineParams:
 
     return AffineParams(a=a, b=b, c=c, d=d, e=e, f=f)
 
+
 def _parse_affine_params_cli(value: str) -> list[AffineParams]:
     raw_sets = [s.strip() for s in value.split("/") if s.strip()]
     if not raw_sets:
@@ -130,7 +131,9 @@ def _parse_affine_params_cli(value: str) -> list[AffineParams]:
     return [_parse_affine_params_single(s) for s in raw_sets]
 
 
-def _apply_affine_sets(config: Config, affines: list[AffineParams], *, source: str) -> None:
+def _apply_affine_sets(
+    config: Config, affines: list[AffineParams], *, source: str
+) -> None:
     if len(affines) == 1:
         config.affine_params = affines[0]
         return
@@ -250,7 +253,6 @@ def _apply_global_affine(config: Config, data: JsonMapping) -> None:
     _apply_affine_sets(config, parsed, source="JSON affine_params")
 
 
-
 def _parse_affine_params_dict(affine_dict: JsonMapping) -> AffineParams:
     return AffineParams(
         a=float(affine_dict.get("a", 1.0)),
@@ -336,6 +338,7 @@ def _apply_cli_to_config(config: Config, cli_args: "argparse.Namespace") -> None
     if cli_args.affine_params:
         affine_sets = _parse_affine_params_cli(cli_args.affine_params)
         _apply_affine_sets(config, affine_sets, source="CLI --affine-params")
+
 
 def build_config(cli_args: "argparse.Namespace") -> Config:
     """Merge defaults, JSON config (if provided) and CLI into final Config."""
