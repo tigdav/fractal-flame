@@ -79,6 +79,7 @@ ignore = [
     "PT006",  # Allow non-tuple parameter names in pytest.mark.parametrize.
     "ARG001", # Allow unused function arguments in tests (fixtures, callbacks).
 ]
+"benchmarks/*.py" = ["INP001"]
 
 [tool.ruff.lint.isort]
 split-on-trailing-comma = false
