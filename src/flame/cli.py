@@ -49,7 +49,7 @@ def parse_args() -> argparse.Namespace:
         "-t",
         "--threads",
         type=int,
-        help="Number of threads (default 1)",
+        help="Number of worker processes (default 1)",
     )
     parser.add_argument(
         "-ap",
