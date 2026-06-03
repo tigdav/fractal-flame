@@ -78,6 +78,7 @@ ignore = [
     "PLR2004",# Allow magic numbers in tests.
     "PT006",  # Allow non-tuple parameter names in pytest.mark.parametrize.
     "ARG001", # Allow unused function arguments in tests (fixtures, callbacks).
+    "INP001", # Allow implicit namespace package (pytest collects tests directly).
 ]
 "benchmarks/*.py" = ["INP001"]
 
