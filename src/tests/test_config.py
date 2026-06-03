@@ -9,7 +9,7 @@ from flame.config import (
     ConfigError,
     FunctionConfig,
     SizeConfig,
-    _parse_affine_params,
+    _parse_affine_params_single,
     _parse_functions,
     build_config,
     load_json_config,
@@ -37,8 +37,8 @@ def _make_empty_args(**overrides):
     return SimpleNamespace(**base)
 
 
-def test_parse_affine_params_valid():
-    params = _parse_affine_params("0.1,0.2,0.3,0.4,0.5,0.6")
+def test_parse_affine_params_single_valid():
+    params = _parse_affine_params_single("0.1,0.2,0.3,0.4,0.5,0.6")
 
     assert isinstance(params, AffineParams)
     assert params.a == pytest.approx(0.1)
@@ -49,14 +49,14 @@ def test_parse_affine_params_valid():
     assert params.f == pytest.approx(0.6)
 
 
-def test_parse_affine_params_wrong_count_raises():
+def test_parse_affine_params_single_wrong_count_raises():
     with pytest.raises(ConfigError):
-        _parse_affine_params("0.1,0.2,0.3")
+        _parse_affine_params_single("0.1,0.2,0.3")
 
 
-def test_parse_affine_params_non_float_raises():
+def test_parse_affine_params_single_non_float_raises():
     with pytest.raises(ConfigError):
-        _parse_affine_params("0.1,0.2,x,0.4,0.5,0.6")
+        _parse_affine_params_single("0.1,0.2,x,0.4,0.5,0.6")
 
 
 def test_parse_functions_valid_string():
@@ -223,7 +223,7 @@ def test_build_config_uses_defaults_without_cli_or_json():
     assert config.iteration_count == 2500
     assert config.output_path == "result.png"
     assert config.threads == 1
-    assert config.seed == pytest.approx(5.1234)
+    assert config.seed == 5
 
     assert isinstance(config.affine_params, AffineParams)
     assert config.affine_params == AffineParams()
