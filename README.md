@@ -1,5 +1,10 @@
 # Fractal Flame Generator
 
+[![CI](https://github.com/tigdav/fractal-flame/actions/workflows/ci.yml/badge.svg)](https://github.com/tigdav/fractal-flame/actions/workflows/ci.yml)
+[![Python](https://img.shields.io/badge/python-3.11%2B-blue)](https://www.python.org/downloads/)
+[![License: MIT](https://img.shields.io/badge/license-MIT-green)](LICENSE)
+[![Code style: black](https://img.shields.io/badge/code%20style-black-000000)](https://github.com/psf/black)
+
 A Python implementation of a fractal flame image generator based on the Chaos Game approach.
 
 The project supports single-threaded and multi-process rendering modes, configurable transformations,
