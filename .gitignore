@@ -8,8 +8,21 @@ __pycache__/
 venv/
 env/
 
-# Pytest
+# Pytest / coverage
 .pytest_cache/
+.coverage
+htmlcov/
+
+# IDE
+.idea/
+.vscode/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
 
 # Generated example outputs
 examples/out/
