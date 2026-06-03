@@ -57,7 +57,7 @@ Basic example:
 poetry run python -m flame -i 500000 -f swirl:1.0,horseshoe:0.8 -t 4
 ```
 
-Example matching an example configuration:
+Reproducible example with a fixed seed:
 
 ```bash
 poetry run python -m flame --seed 32.123531 -i 5000 -f swirl:1.0,horseshoe:0.8 -t 2
