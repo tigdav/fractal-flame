@@ -5,6 +5,16 @@
 [![License: MIT](https://img.shields.io/badge/license-MIT-green)](LICENSE)
 [![Code style: black](https://img.shields.io/badge/code%20style-black-000000)](https://github.com/psf/black)
 
+<p align="center">
+  <img src="examples/images/constellation_sym5.png" alt="Constellation — fractal flame with 5-fold symmetry" width="30%"/>
+  <img src="examples/images/aurora_sym9.png" alt="Aurora — fractal flame with 9-fold symmetry" width="30%"/>
+  <img src="examples/images/neon_flower_sym8.png" alt="Neon Flower — fractal flame with 8-fold symmetry" width="30%"/>
+</p>
+
+<p align="center">
+  <sub>More examples in the <a href="examples/README.md">gallery</a>.</sub>
+</p>
+
 A Python implementation of a fractal flame image generator based on the Chaos Game approach.
 
 The project supports single-threaded and multi-process rendering modes, configurable transformations,
@@ -201,7 +211,7 @@ src/flame/        Core implementation
 configs/          Example configuration files
 examples/         Generated images and usage examples
 benchmarks/       Performance measurement scripts
-tests/            Unit and integration tests
+src/tests/        Unit and integration tests
 ```
 
 ---
