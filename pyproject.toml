@@ -1,7 +1,7 @@
 [tool.poetry]
 name = "fractal-flame"
 version = "0.1.0"
-description = ""
+description = "Fractal flame image generator using the Chaos Game algorithm"
 authors = ["tigdav <47061880+tigdav@users.noreply.github.com>"]
 readme = "README.md"
 packages = [{ include = "flame", from = "src" }]
