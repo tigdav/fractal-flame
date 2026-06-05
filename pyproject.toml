@@ -18,20 +18,10 @@ isort = "^5.13.2"
 ruff = "^0.6.1"
 pytest = "*"
 pytest-cov = "*"
-pytest-deadfixtures = "*"
-pytest-mock = "*"
-pytest-repeat = "*"
-pytest-asyncio = "*"
 
 [build-system]
 requires = ["poetry-core"]
 build-backend = "poetry.core.masonry.api"
-
-[tool.mypy]
-python_version = "3.11"
-warn_return_any = true
-warn_unused_configs = true
-exclude = ["/venv"]
 
 [tool.ruff]
 line-length = 88
@@ -62,11 +52,6 @@ ignore = [
 [tool.ruff.lint.per-file-ignores]
 "__init__.py" = [
     "F401", # Checks for unused imports.
-]
-"tests/**.py" = [
-    "S101", # Checks for uses of the assert keyword.
-    "SLF001", # Checks for accesses on "private" class members.
-    "FBT001", # Checks for the use of boolean positional arguments in function definitions, as determined by the presence of a bool type hint.
 ]
 "src/tests/**.py" = [
     "S101",   # allow assert

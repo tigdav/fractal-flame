@@ -505,26 +505,6 @@ pygments = ">=2.7.2"
 dev = ["argcomplete", "attrs (>=19.2)", "hypothesis (>=3.56)", "mock", "requests", "setuptools", "xmlschema"]
 
 [[package]]
-name = "pytest-asyncio"
-version = "1.2.0"
-description = "Pytest support for asyncio"
-optional = false
-python-versions = ">=3.9"
-groups = ["dev"]
-files = [
-    {file = "pytest_asyncio-1.2.0-py3-none-any.whl", hash = "sha256:8e17ae5e46d8e7efe51ab6494dd2010f4ca8dae51652aa3c8d55acf50bfb2e99"},
-    {file = "pytest_asyncio-1.2.0.tar.gz", hash = "sha256:c609a64a2a8768462d0c99811ddb8bd2583c33fd33cf7f21af1c142e824ffb57"},
-]
-
-[package.dependencies]
-pytest = ">=8.2,<9"
-typing-extensions = {version = ">=4.12", markers = "python_version < \"3.13\""}
-
-[package.extras]
-docs = ["sphinx (>=5.3)", "sphinx-rtd-theme (>=1)"]
-testing = ["coverage (>=6.2)", "hypothesis (>=5.7.1)"]
-
-[[package]]
 name = "pytest-cov"
 version = "7.0.0"
 description = "Pytest plugin for measuring coverage."
@@ -543,54 +523,6 @@ pytest = ">=7"
 
 [package.extras]
 testing = ["process-tests", "pytest-xdist", "virtualenv"]
-
-[[package]]
-name = "pytest-deadfixtures"
-version = "2.2.1"
-description = "A simple plugin to list unused fixtures in pytest"
-optional = false
-python-versions = "*"
-groups = ["dev"]
-files = [
-    {file = "pytest-deadfixtures-2.2.1.tar.gz", hash = "sha256:ca15938a4e8330993ccec9c6c847383d88b3cd574729530647dc6b492daa9c1e"},
-    {file = "pytest_deadfixtures-2.2.1-py2.py3-none-any.whl", hash = "sha256:db71533f2d9456227084e00a1231e732973e299ccb7c37ab92e95032ab6c083e"},
-]
-
-[package.dependencies]
-pytest = ">=3.0.0"
-
-[[package]]
-name = "pytest-mock"
-version = "3.15.1"
-description = "Thin-wrapper around the mock package for easier use with pytest"
-optional = false
-python-versions = ">=3.9"
-groups = ["dev"]
-files = [
-    {file = "pytest_mock-3.15.1-py3-none-any.whl", hash = "sha256:0a25e2eb88fe5168d535041d09a4529a188176ae608a6d249ee65abc0949630d"},
-    {file = "pytest_mock-3.15.1.tar.gz", hash = "sha256:1849a238f6f396da19762269de72cb1814ab44416fa73a8686deac10b0d87a0f"},
-]
-
-[package.dependencies]
-pytest = ">=6.2.5"
-
-[package.extras]
-dev = ["pre-commit", "pytest-asyncio", "tox"]
-
-[[package]]
-name = "pytest-repeat"
-version = "0.9.4"
-description = "pytest plugin for repeating tests"
-optional = false
-python-versions = ">=3.9"
-groups = ["dev"]
-files = [
-    {file = "pytest_repeat-0.9.4-py3-none-any.whl", hash = "sha256:c1738b4e412a6f3b3b9e0b8b29fcd7a423e50f87381ad9307ef6f5a8601139f3"},
-    {file = "pytest_repeat-0.9.4.tar.gz", hash = "sha256:d92ac14dfaa6ffcfe6917e5d16f0c9bc82380c135b03c2a5f412d2637f224485"},
-]
-
-[package.dependencies]
-pytest = "*"
 
 [[package]]
 name = "ruff"
@@ -620,20 +552,7 @@ files = [
     {file = "ruff-0.6.9.tar.gz", hash = "sha256:b076ef717a8e5bc819514ee1d602bbdca5b4420ae13a9cf61a0c0a4f53a2baa2"},
 ]
 
-[[package]]
-name = "typing-extensions"
-version = "4.15.0"
-description = "Backported and Experimental Type Hints for Python 3.9+"
-optional = false
-python-versions = ">=3.9"
-groups = ["dev"]
-markers = "python_version < \"3.13\""
-files = [
-    {file = "typing_extensions-4.15.0-py3-none-any.whl", hash = "sha256:f0fa19c6845758ab08074a0cfa8b7aecb71c999ca73d62883bc25cc018c4e548"},
-    {file = "typing_extensions-4.15.0.tar.gz", hash = "sha256:0cea48d173cc12fa28ecabc3b837ea3cf6f38c6d1136f85cbaaf598984861466"},
-]
-
 [metadata]
 lock-version = "2.1"
 python-versions = "^3.11"
-content-hash = "9c502ae96e0cfd0f89c31092535de9b6fd65c529d0657fa65f9dbd687c4e3ff4"
+content-hash = "06ab6663618f26f6594b38c54e5534b1fd81faefd18471ff5506cbcf0d8c2247"
