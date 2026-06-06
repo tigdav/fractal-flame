@@ -125,6 +125,38 @@ poetry run python -m flame --config configs/constellation_sym5.json
 
 ---
 
+### Phoenix (Symmetry 11)
+
+- Config: `configs/phoenix_sym11.json`
+- Features:
+    - high-order radial symmetry (11-fold)
+    - four combined transformations
+    - gamma correction
+
+```bash
+poetry run python -m flame --config configs/phoenix_sym11.json
+```
+
+![Phoenix](images/phoenix_sym11.png)
+
+---
+
+### Soft Smoke
+
+- Config: `configs/soft_smoke.json`
+- Features:
+    - no symmetry
+    - soft, smoke-like gradients
+    - gamma correction
+
+```bash
+poetry run python -m flame --config configs/soft_smoke.json
+```
+
+![Soft smoke](images/soft_smoke.png)
+
+---
+
 ### Gamma Correction Comparison
 
 These two examples demonstrate the effect of gamma correction on the final image.
