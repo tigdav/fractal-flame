@@ -17,7 +17,6 @@ from flame.core import (
     _choose_variation,
     _map_to_pixel,
     generate_flame,
-    generate_points,
 )
 from flame.transforms import CompiledVariation, linear
 
@@ -149,15 +148,6 @@ def test_map_to_pixel_outside_bounds_returns_none():
     assert _map_to_pixel(0.0, Y_MIN - 1.0, width, height) is None
 
 
-def test_generate_points_produces_expected_number_of_points():
-    config = _make_simple_config(iters=50, symmetry=1)
-
-    points = generate_points(config)
-
-    assert len(points) == config.iteration_count
-    assert {name for (_, _, name) in points} == {"swirl"}
-
-
 def test_generate_flame_shapes_and_non_negative_values():
     config = _make_simple_config(width=32, height=24, iters=100, symmetry=1)
 
@@ -185,23 +175,6 @@ def test_generate_flame_symmetry_increases_total_hits():
 
     assert hits_base > 0.0
     assert hits_sym >= hits_base
-
-
-def test_generate_points_logs_progress(caplog):
-    config = _make_simple_config(iters=20, symmetry=1)
-
-    with caplog.at_level(logging.INFO, logger="fractal_flame.core"):
-        points = generate_points(config)
-
-    assert len(points) == config.iteration_count
-
-    messages = [
-        record.getMessage()
-        for record in caplog.records
-        if record.name == "fractal_flame.core"
-    ]
-    assert any("Chaos Game progress" in msg for msg in messages)
-    assert any("Chaos Game finished, generated" in msg for msg in messages)
 
 
 def test_generate_flame_logs_progress(caplog):

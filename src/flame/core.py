@@ -79,51 +79,6 @@ def _map_to_pixel(
     return None
 
 
-def generate_points(config: Config) -> list[tuple[float, float, str]]:
-    """Generate chaotic points for a single-thread fractal flame.
-
-    Args:
-        config: Runtime configuration.
-
-    Returns:
-        Generated points as (x, y, variation_name).
-
-    """
-    logger.info(
-        "Starting single-thread Chaos Game with %d iterations", config.iteration_count
-    )
-
-    variations = compile_variations(config.functions, config.affine_params)
-    cumulative = _build_weight_table(variations)
-    rng = random.Random(config.seed)
-
-    x = rng.uniform(-1.0, 1.0)
-    y = rng.uniform(-1.0, 1.0)
-
-    burn_in = max(100, config.iteration_count // 10)
-    total_iterations = burn_in + config.iteration_count
-
-    points: list[tuple[float, float, str]] = []
-
-    log_step = max(total_iterations // 10, 1)
-
-    for i in range(total_iterations):
-        variation = _choose_variation(rng, variations, cumulative)
-
-        x, y = variation.affine.apply(x, y)
-        x, y = variation.func(x, y)
-
-        if i >= burn_in:
-            points.append((x, y, variation.name))
-
-        if (i + 1) % log_step == 0:
-            done = int((i + 1) / total_iterations * 100)
-            logger.info("Chaos Game progress: %d%%", done)
-
-    logger.info("Chaos Game finished, generated %d points", len(points))
-    return points
-
-
 def generate_flame(config: Config) -> tuple[NDArray[np.float64], NDArray[np.float64]]:
     """Generate histogram and color buffer for a fractal flame.
 
