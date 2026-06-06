@@ -233,21 +233,7 @@ poetry run pytest
 
 ### Test coverage
 
-Test coverage is measured using `pytest-cov`.
-
-| Module           | Coverage |
-|------------------|----------|
-| flame.__main__   | 97%      |
-| flame.affine     | 100%     |
-| flame.cli        | 100%     |
-| flame.config     | 94%      |
-| flame.core       | 98%      |
-| flame.mp_runner  | 100%     |
-| flame.render     | 95%      |
-| flame.transforms | 100%     |
-| **Total**        | **97%**  |
-
-Coverage was measured using:
+Test coverage is measured using `pytest-cov`:
 
 ```bash
 poetry run pytest --cov=src/flame --cov-report=term
