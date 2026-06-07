@@ -5,7 +5,7 @@
   },
   "iteration_count": 2600000,
   "output_path": "examples/out/soft_smoke.png",
-  "threads": 8,
+  "workers": 8,
   "seed": 3.14159,
   "gamma_correction": true,
   "gamma": 2.35,

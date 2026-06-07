@@ -17,7 +17,7 @@
 
 A Python implementation of a fractal flame image generator based on the Chaos Game approach.
 
-The project supports single-threaded and multi-process rendering modes, configurable transformations,
+The project supports single-process and multi-process rendering modes, configurable transformations,
 and multiple input methods (CLI arguments and JSON configuration files). It focuses on correctness,
 reproducibility, and code quality rather than advanced post-processing techniques.
 
@@ -33,7 +33,7 @@ reproducibility, and code quality rather than advanced post-processing technique
     - spherical
     - sinusoidal
     - linear
-- Single-threaded and multi-process rendering modes
+- Single-process and multi-process rendering modes
 - Configurable image size, iteration count, and output path
 - Output format: PNG image (RGB, 8-bit per channel)
 - Optional gamma correction
@@ -69,13 +69,13 @@ poetry install
 Basic example:
 
 ```bash
-poetry run python -m flame -i 500000 -f swirl:1.0,horseshoe:0.8 -t 4
+poetry run python -m flame -i 500000 -f swirl:1.0,horseshoe:0.8 --workers 4
 ```
 
 Reproducible example with a fixed seed:
 
 ```bash
-poetry run python -m flame --seed 32.123531 -i 5000 -f swirl:1.0,horseshoe:0.8 -t 2
+poetry run python -m flame --seed 32.123531 -i 5000 -f swirl:1.0,horseshoe:0.8 --workers 2
 ```
 
 #### Affine parameters from CLI
@@ -105,7 +105,7 @@ Available CLI options include:
 - `--seed` — random seed (default 5)
 - `-i`, `--iteration-count` — number of iterations
 - `-o`, `--output-path` — output PNG file path
-- `-t`, `--threads` — number of worker processes (default 1)
+- `--workers` — number of worker processes (default 1)
 - `-f`, `--functions` — transformation functions and weights
 - `-ap`, `--affine-params` — affine transformation parameters (single or multiple)
 - `-g`, `--gamma-correction` — enable gamma correction
@@ -196,7 +196,7 @@ See [`examples/README.md`](examples/README.md) for:
 
 ## Performance benchmarks
 
-The project includes benchmark scripts comparing single-threaded and multi-process rendering.
+The project includes benchmark scripts comparing single-process and multi-process rendering.
 
 Benchmark scripts and results are available in the `benchmarks/` directory.
 

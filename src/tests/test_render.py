@@ -14,7 +14,7 @@ def _make_config(
         size=SizeConfig(width=width, height=height),
         iteration_count=100,
         output_path="dummy.png",
-        threads=1,
+        workers=1,
         seed=1.0,
         functions=[],  # not used by render
         affine_params=AffineParams(),

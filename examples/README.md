@@ -185,5 +185,5 @@ poetry run python -m flame --config configs/gamma_on.json
 
 ## Notes
 
-- Visual appearance may slightly vary depending on platform, number of threads and floating-point behavior.
+- Visual appearance may slightly vary depending on platform, number of worker processes and floating-point behavior.
 - Example images are provided for demonstration purposes and do not involve additional post-processing.

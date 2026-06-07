@@ -37,10 +37,10 @@ def main() -> int:
         validate_config(config)
 
         logger.info(
-            "Generating fractal flame %dx%d, threads=%d, output=%s, iterations=%d",
+            "Generating fractal flame %dx%d, workers=%d, output=%s, iterations=%d",
             config.size.width,
             config.size.height,
-            config.threads,
+            config.workers,
             config.output_path,
             config.iteration_count,
         )

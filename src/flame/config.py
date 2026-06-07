@@ -18,7 +18,7 @@ DEFAULT_WIDTH = 1920
 DEFAULT_HEIGHT = 1080
 DEFAULT_ITERATION_COUNT = 2500
 DEFAULT_OUTPUT_PATH = "result.png"
-DEFAULT_THREADS = 1
+DEFAULT_WORKERS = 1
 DEFAULT_SEED = 5
 DEFAULT_GAMMA = 2.2
 DEFAULT_SYMMETRY_LEVEL = 1
@@ -75,7 +75,7 @@ class Config:
     size: SizeConfig
     iteration_count: int
     output_path: str
-    threads: int
+    workers: int
     seed: float
     functions: list[FunctionConfig]
     affine_params: AffineParams
@@ -208,8 +208,8 @@ def _apply_scalar_fields(config: Config, data: JsonMapping) -> None:
     if "output_path" in data:
         config.output_path = str(data["output_path"])
 
-    if "threads" in data:
-        config.threads = int(data["threads"])
+    if "workers" in data:
+        config.workers = int(data["workers"])
 
     if "seed" in data:
         config.seed = float(data["seed"])
@@ -321,7 +321,7 @@ def _apply_cli_to_config(config: Config, cli_args: "argparse.Namespace") -> None
     overrides: dict[str, object] = {
         "iteration_count": cli_args.iteration_count,
         "output_path": cli_args.output_path,
-        "threads": cli_args.threads,
+        "workers": cli_args.workers,
         "seed": cli_args.seed,
         "gamma": cli_args.gamma,
         "symmetry_level": cli_args.symmetry_level,
@@ -346,7 +346,7 @@ def build_config(cli_args: "argparse.Namespace") -> Config:
         size=SizeConfig(),
         iteration_count=DEFAULT_ITERATION_COUNT,
         output_path=DEFAULT_OUTPUT_PATH,
-        threads=DEFAULT_THREADS,
+        workers=DEFAULT_WORKERS,
         seed=DEFAULT_SEED,
         functions=[FunctionConfig(name=DEFAULT_FUNCTION, weight=1.0)],
         affine_params=AffineParams(),
@@ -372,8 +372,8 @@ def validate_config(config: Config) -> None:
         msg = "Iteration count must be a positive integer"
         _raise_config(msg)
 
-    if config.threads <= 0:
-        msg = "Threads must be a positive integer"
+    if config.workers <= 0:
+        msg = "Workers must be a positive integer"
         _raise_config(msg)
 
     if not config.functions:

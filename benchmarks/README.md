@@ -19,20 +19,20 @@ conditions and to evaluate scalability and performance trade-offs of the impleme
 
 ## Multi-process scaling benchmark
 
-**Script:** `mp_threads_benchmark.py`
+**Script:** `mp_workers_benchmark.py`
 
 Measures total generation time for different numbers of worker processes.
 
 ### Command
 
 ```bash
-poetry run python benchmarks/mp_threads_benchmark.py
+poetry run python benchmarks/mp_workers_benchmark.py
 ```
 
 ### Results
 
 ```
-Threads | Time (s) | Speedup
+Workers | Time (s) | Speedup
 ------------------------------
       1 |    2.804 |   1.00x
       2 |    1.943 |   1.44x

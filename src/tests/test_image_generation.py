@@ -16,7 +16,7 @@ def _make_linear_config(
         size=SizeConfig(width=width, height=height),
         iteration_count=iters,
         output_path="result.png",
-        threads=1,
+        workers=1,
         seed=seed,
         functions=[FunctionConfig(name="linear", weight=1.0)],
         affine_params=AffineParams(),

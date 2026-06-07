@@ -5,7 +5,7 @@
   },
   "iteration_count": 3800000,
   "output_path": "examples/out/phoenix_sym11.png",
-  "threads": 8,
+  "workers": 8,
   "seed": 6.666,
   "gamma_correction": true,
   "gamma": 2.15,

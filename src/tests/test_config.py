@@ -25,7 +25,7 @@ def _make_empty_args(**overrides):
         "height": None,
         "iteration_count": None,
         "output_path": None,
-        "threads": None,
+        "workers": None,
         "seed": None,
         "affine_params": None,
         "functions": None,
@@ -118,7 +118,7 @@ def test_build_config_uses_json_values_when_no_cli_override(tmp_path):
         "size": {"width": 640, "height": 480},
         "iteration_count": 5000,
         "output_path": "from_json.png",
-        "threads": 4,
+        "workers": 4,
         "seed": 1.23,
         "functions": [{"name": "swirl", "weight": 1.0}],
         "affine_params": {
@@ -143,7 +143,7 @@ def test_build_config_uses_json_values_when_no_cli_override(tmp_path):
     assert config.size.height == 480
     assert config.iteration_count == 5000
     assert config.output_path == "from_json.png"
-    assert config.threads == 4
+    assert config.workers == 4
     assert config.seed == pytest.approx(1.23)
 
     assert len(config.functions) == 1
@@ -164,7 +164,7 @@ def test_build_config_cli_overrides_json(tmp_path):
         "size": {"width": 640, "height": 480},
         "iteration_count": 5000,
         "output_path": "from_json.png",
-        "threads": 2,
+        "workers": 2,
         "seed": 1.23,
         "functions": [{"name": "swirl", "weight": 1.0}],
         "affine_params": {"a": 0.5, "b": 0.0, "c": 0.1, "d": 0.0, "e": 0.5, "f": 0.0},
@@ -181,7 +181,7 @@ def test_build_config_cli_overrides_json(tmp_path):
         height=600,
         iteration_count=9999,
         output_path="from_cli.png",
-        threads=8,
+        workers=8,
         seed=9.99,
         affine_params="0.1,0.2,0.3,0.4,0.5,0.6",
         functions="horseshoe:0.7",
@@ -196,7 +196,7 @@ def test_build_config_cli_overrides_json(tmp_path):
     assert config.size.height == 600
     assert config.iteration_count == 9999
     assert config.output_path == "from_cli.png"
-    assert config.threads == 8
+    assert config.workers == 8
     assert config.seed == pytest.approx(9.99)
 
     assert len(config.functions) == 1
@@ -222,7 +222,7 @@ def test_build_config_uses_defaults_without_cli_or_json():
     assert config.size.height == 1080
     assert config.iteration_count == 2500
     assert config.output_path == "result.png"
-    assert config.threads == 1
+    assert config.workers == 1
     assert config.seed == 5
 
     assert isinstance(config.affine_params, AffineParams)
@@ -243,7 +243,7 @@ def _make_valid_config() -> Config:
         size=SizeConfig(width=800, height=600),
         iteration_count=1000,
         output_path="result.png",
-        threads=1,
+        workers=1,
         seed=5.1234,
         functions=[FunctionConfig(name="swirl", weight=1.0)],
         affine_params=AffineParams(),
@@ -272,9 +272,9 @@ def test_validate_config_invalid_iteration_count_raises():
         validate_config(config)
 
 
-def test_validate_config_invalid_threads_raises():
+def test_validate_config_invalid_workers_raises():
     config = _make_valid_config()
-    config.threads = 0
+    config.workers = 0
     with pytest.raises(ConfigError):
         validate_config(config)
 

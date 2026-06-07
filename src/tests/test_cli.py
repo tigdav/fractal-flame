@@ -16,7 +16,7 @@ def test_parse_args_defaults(monkeypatch):
     assert args.seed is None
     assert args.iteration_count is None
     assert args.output_path is None
-    assert args.threads is None
+    assert args.workers is None
     assert args.affine_params is None
     assert args.functions is None
     assert args.config is None
@@ -42,7 +42,7 @@ def test_parse_args_full_option_set(monkeypatch):
             "10000",
             "-o",
             "out.png",
-            "-t",
+            "--workers",
             "4",
             "-ap",
             "0.1,0.2,0.3,0.4,0.5,0.6",
@@ -65,7 +65,7 @@ def test_parse_args_full_option_set(monkeypatch):
     assert args.seed == pytest.approx(1.23)
     assert args.iteration_count == 10000
     assert args.output_path == "out.png"
-    assert args.threads == 4
+    assert args.workers == 4
     assert args.affine_params == "0.1,0.2,0.3,0.4,0.5,0.6"
     assert args.functions == "swirl:1.0,horseshoe:0.8"
     assert args.config == "config.json"

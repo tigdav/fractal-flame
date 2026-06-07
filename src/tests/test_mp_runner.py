@@ -8,12 +8,12 @@ from flame import mp_runner
 from flame.config import AffineParams, Config, FunctionConfig, SizeConfig
 
 
-def _make_base_config(threads: int = 1) -> Config:
+def _make_base_config(workers: int = 1) -> Config:
     return Config(
         size=SizeConfig(width=4, height=4),
         iteration_count=10,
         output_path="result.png",
-        threads=threads,
+        workers=workers,
         seed=1.0,
         functions=[FunctionConfig(name="swirl", weight=1.0)],
         affine_params=AffineParams(),
@@ -40,13 +40,13 @@ def test_split_iterations_when_workers_more_than_iterations():
 
 
 def test_build_worker_config_overrides_iterations_and_seed():
-    base = _make_base_config(threads=4)
+    base = _make_base_config(workers=4)
     worker = mp_runner._build_worker_config(base, iterations=123, seed_offset=2)
 
     assert isinstance(worker, Config)
     assert worker.iteration_count == 123
     assert worker.seed == pytest.approx(base.seed + 2.0)
-    assert worker.threads == 1
+    assert worker.workers == 1
 
     # shared fields are copied as is
     assert worker.size is base.size
@@ -58,8 +58,8 @@ def test_build_worker_config_overrides_iterations_and_seed():
     assert worker.symmetry_level == base.symmetry_level
 
 
-def test_generate_flame_single_thread_uses_core_function(monkeypatch):
-    config = _make_base_config(threads=1)
+def test_generate_flame_single_process_uses_core_function(monkeypatch):
+    config = _make_base_config(workers=1)
 
     fake_hist = np.ones((2, 2), dtype=np.float64)
     fake_colors = np.full((2, 2, 3), 0.5, dtype=np.float64)
@@ -80,7 +80,7 @@ def test_generate_flame_single_thread_uses_core_function(monkeypatch):
 
 
 def test_generate_flame_multi_process_aggregates_worker_results(monkeypatch):
-    config = _make_base_config(threads=2)
+    config = _make_base_config(workers=2)
     config.iteration_count = 10
 
     def fake_worker_task(cfg):
@@ -123,7 +123,7 @@ def test_generate_flame_multi_process_aggregates_worker_results(monkeypatch):
 
 
 @pytest.mark.slow
-def test_generate_flame_multi_thread_faster_than_sequential(monkeypatch):
+def test_generate_flame_parallel_faster_than_sequential(monkeypatch):
     """Benchmark-style check: parallel execution finishes faster than
     the naive sequential total (N × sleep_per_worker).
 
@@ -131,9 +131,9 @@ def test_generate_flame_multi_thread_faster_than_sequential(monkeypatch):
     mp_runner splits work and executes tasks concurrently.
     """
     sleep_per_worker = 0.05
-    threads = 4
+    workers = 4
 
-    config = _make_base_config(threads=threads)
+    config = _make_base_config(workers=workers)
     config.iteration_count = 100
 
     # Fake single-worker compute: blocks for sleep_per_worker.
@@ -172,7 +172,7 @@ def test_generate_flame_multi_thread_faster_than_sequential(monkeypatch):
     assert colors.shape == (config.size.height, config.size.width, 3)
 
     # If executed sequentially, total time = N × sleep.
-    sequential_time = sleep_per_worker * threads
+    sequential_time = sleep_per_worker * workers
 
     # Parallel execution must be strictly faster than sequential.
     assert elapsed < sequential_time

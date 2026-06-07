@@ -46,8 +46,7 @@ def parse_args() -> argparse.Namespace:
         help="Output PNG file path (default result.png)",
     )
     parser.add_argument(
-        "-t",
-        "--threads",
+        "--workers",
         type=int,
         help="Number of worker processes (default 1)",
     )

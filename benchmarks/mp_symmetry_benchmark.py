@@ -13,12 +13,12 @@ from flame.config import AffineParams, Config, FunctionConfig, SizeConfig
 from flame.mp_runner import generate_flame
 
 
-def _make_benchmark_config(*, threads: int, symmetry_level: int) -> Config:
+def _make_benchmark_config(*, workers: int, symmetry_level: int) -> Config:
     return Config(
         size=SizeConfig(width=1600, height=1200),
         iteration_count=1_000_000,
         output_path="benchmark.png",
-        threads=threads,
+        workers=workers,
         seed=12.345,
         functions=[FunctionConfig(name="swirl", weight=1.0)],
         affine_params=AffineParams(),
@@ -39,23 +39,23 @@ def run_symmetry_benchmark() -> None:
     Warms up once, then measures generate_flame() runtime for each symmetry level
     under a heavy fixed config, printing a small summary table.
     """
-    threads = 4
+    workers = 4
     symmetry_levels = [1, 2, 3, 4, 6, 8]
     results: list[tuple[int, float]] = []
 
     print("Warming up...")
-    warm = _make_benchmark_config(threads=threads, symmetry_level=1)
+    warm = _make_benchmark_config(workers=workers, symmetry_level=1)
     generate_flame(warm)
     _cooldown()
 
     print(
         f"Config: {warm.size.width}x{warm.size.height}, "
-        f"iters={warm.iteration_count}, fn=swirl, workers={threads}"
+        f"iters={warm.iteration_count}, fn=swirl, workers={workers}"
     )
 
     print("\nRunning benchmark...\n")
     for level in symmetry_levels:
-        config = _make_benchmark_config(threads=threads, symmetry_level=level)
+        config = _make_benchmark_config(workers=workers, symmetry_level=level)
         start = time.perf_counter()
         generate_flame(config)
         elapsed = time.perf_counter() - start

@@ -18,12 +18,12 @@ from flame.mp_runner import generate_flame
 from flame.render import render_image
 
 
-def _make_base_config(*, threads: int, gamma_correction: bool) -> Config:
+def _make_base_config(*, workers: int, gamma_correction: bool) -> Config:
     return Config(
         size=SizeConfig(width=1600, height=1200),
         iteration_count=1_000_000,
         output_path="benchmark.png",
-        threads=threads,
+        workers=workers,
         seed=12.345,
         functions=[FunctionConfig(name="swirl", weight=1.0)],
         affine_params=AffineParams(),
@@ -75,7 +75,7 @@ def run_render_gamma_benchmark() -> None:
     repeats = 7
 
     print("Generating fixed histogram/colors (one-time)...")
-    gen_cfg = _make_base_config(threads=workers, gamma_correction=False)
+    gen_cfg = _make_base_config(workers=workers, gamma_correction=False)
     hist, colors = generate_flame(gen_cfg)
     _cooldown()
 
@@ -85,8 +85,8 @@ def run_render_gamma_benchmark() -> None:
         f"workers={workers}, repeats={repeats}"
     )
 
-    cfg_off = _make_base_config(threads=workers, gamma_correction=False)
-    cfg_on = _make_base_config(threads=workers, gamma_correction=True)
+    cfg_off = _make_base_config(workers=workers, gamma_correction=False)
+    cfg_on = _make_base_config(workers=workers, gamma_correction=True)
 
     print("\nMeasuring render time...\n")
     off_times = _measure_render(cfg_off, hist, colors, repeats=repeats)

@@ -27,7 +27,7 @@ def _build_worker_config(config: Config, iterations: int, seed_offset: int) -> C
         size=config.size,
         iteration_count=iterations,
         output_path=config.output_path,
-        threads=1,
+        workers=1,
         seed=config.seed + float(seed_offset),
         functions=config.functions,
         affine_params=config.affine_params,
@@ -81,20 +81,20 @@ def generate_flame(config: Config) -> tuple[NDArray[np.float64], NDArray[np.floa
         Tuple of (histogram, colors) arrays.
 
     """
-    if config.threads <= 1:
+    if config.workers <= 1:
         logger.info("Running single-process flame generation")
         return generate_flame_single(config)
 
-    threads = config.threads
+    workers = config.workers
     logger.info(
         "Running multi-process flame generation with %d workers and %d iterations",
-        threads,
+        workers,
         config.iteration_count,
     )
 
     start = time.perf_counter()
 
-    iteration_chunks = _split_iterations(config.iteration_count, threads)
+    iteration_chunks = _split_iterations(config.iteration_count, workers)
 
     worker_configs: list[Config] = []
     for idx, chunk_iters in enumerate(iteration_chunks):
@@ -105,7 +105,7 @@ def generate_flame(config: Config) -> tuple[NDArray[np.float64], NDArray[np.floa
         )
         worker_configs.append(worker_config)
 
-    with Pool(processes=threads) as pool:
+    with Pool(processes=workers) as pool:
         results = pool.map(_worker_task, worker_configs)
 
     hist_list: list[NDArray[np.float64]] = []

@@ -9,7 +9,7 @@ def _make_config(gamma_on: bool) -> Config:
         size=SizeConfig(width=2, height=2),
         iteration_count=10,
         output_path="out.png",
-        threads=1,
+        workers=1,
         seed=1.0,
         functions=[FunctionConfig(name="linear", weight=1.0)],
         affine_params=AffineParams(),

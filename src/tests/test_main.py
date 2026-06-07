@@ -13,7 +13,7 @@ def _make_config(output_path: str) -> Config:
         size=SizeConfig(width=4, height=3),
         iteration_count=10,
         output_path=output_path,
-        threads=1,
+        workers=1,
         seed=5.0,
         functions=[FunctionConfig(name="swirl", weight=1.0)],
         affine_params=AffineParams(),

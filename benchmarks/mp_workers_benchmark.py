@@ -13,12 +13,12 @@ from flame.config import AffineParams, Config, FunctionConfig, SizeConfig
 from flame.mp_runner import generate_flame
 
 
-def _make_benchmark_config(threads: int) -> Config:
+def _make_benchmark_config(workers: int) -> Config:
     return Config(
         size=SizeConfig(width=1600, height=1200),
         iteration_count=1_000_000,
         output_path="benchmark.png",
-        threads=threads,
+        workers=workers,
         seed=12.345,
         functions=[FunctionConfig(name="swirl", weight=1.0)],
         affine_params=AffineParams(),
@@ -33,17 +33,17 @@ def _cooldown(seconds: float = 0.3) -> None:
     time.sleep(seconds)
 
 
-def run_threads_benchmark() -> None:
+def run_workers_benchmark() -> None:
     """Run worker-count benchmark for generate_flame().
 
-    Warms up once, then measures runtime for several thread counts under a heavy
+    Warms up once, then measures runtime for several worker counts under a heavy
     fixed config and prints a simple speedup table.
     """
-    thread_counts = [1, 2, 4, 8]
+    worker_counts = [1, 2, 4, 8]
     results: list[tuple[int, float]] = []
 
     print("Warming up...")
-    warm = _make_benchmark_config(threads=1)
+    warm = _make_benchmark_config(workers=1)
     generate_flame(warm)
     _cooldown()
 
@@ -53,23 +53,23 @@ def run_threads_benchmark() -> None:
     )
 
     print("\nRunning benchmark...\n")
-    for threads in thread_counts:
-        config = _make_benchmark_config(threads=threads)
+    for workers in worker_counts:
+        config = _make_benchmark_config(workers=workers)
         start = time.perf_counter()
         generate_flame(config)
         elapsed = time.perf_counter() - start
-        results.append((threads, elapsed))
+        results.append((workers, elapsed))
         _cooldown()
 
     print("Fractal flame benchmark (heavy load)")
-    print("Threads | Time (s) | Speedup")
+    print("Workers | Time (s) | Speedup")
     print("------------------------------")
 
     base_time = results[0][1]
-    for threads, elapsed in results:
+    for workers, elapsed in results:
         speedup = base_time / elapsed if elapsed > 0 else 0
-        print(f"{threads:>7} | {elapsed:>8.3f} | {speedup:>6.2f}x")
+        print(f"{workers:>7} | {elapsed:>8.3f} | {speedup:>6.2f}x")
 
 
 if __name__ == "__main__":
-    run_threads_benchmark()
+    run_workers_benchmark()

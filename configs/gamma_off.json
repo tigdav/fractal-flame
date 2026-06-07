@@ -5,7 +5,7 @@
   },
   "iteration_count": 1600000,
   "output_path": "examples/out/gamma_off.png",
-  "threads": 8,
+  "workers": 8,
   "seed": 100.01,
   "gamma_correction": false,
   "gamma": 2.2,

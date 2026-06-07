@@ -5,7 +5,7 @@
   },
   "iteration_count": 2800000,
   "output_path": "examples/out/aurora_sym9.png",
-  "threads": 8,
+  "workers": 8,
   "seed": 9.909,
   "gamma_correction": true,
   "gamma": 2.0,

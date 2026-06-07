@@ -5,7 +5,7 @@
   },
   "iteration_count": 2200000,
   "output_path": "examples/out/ember_ring_sym6.png",
-  "threads": 8,
+  "workers": 8,
   "seed": 21.314,
   "gamma_correction": true,
   "gamma": 2.2,

@@ -5,7 +5,7 @@
   },
   "iteration_count": 3000000,
   "output_path": "examples/out/constellation_sym5.png",
-  "threads": 8,
+  "workers": 8,
   "seed": 77.007,
   "gamma_correction": true,
   "gamma": 2.4,
