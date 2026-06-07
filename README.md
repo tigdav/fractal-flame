@@ -244,5 +244,6 @@ poetry run pytest --cov=src/flame --cov-report=term
 ## Notes
 
 - Visual output may vary slightly depending on platform and floating-point behavior.
-- The implementation does not include advanced post-processing techniques
-  (e.g. log-density normalization or image filtering).
+- The implementation applies logarithmic density normalization, but does not
+  include more advanced post-processing techniques such as density estimation
+  (adaptive, density-dependent blur) or image filtering.
