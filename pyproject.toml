@@ -6,21 +6,49 @@ authors = [
     { name = "tigdav", email = "47061880+tigdav@users.noreply.github.com" },
 ]
 readme = "README.md"
+license = "MIT"
 requires-python = ">=3.11,<4.0"
+keywords = [
+    "fractal",
+    "fractal-flame",
+    "chaos-game",
+    "generative-art",
+    "image-generation",
+    "cli",
+]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Environment :: Console",
+    "Intended Audience :: Developers",
+    "Intended Audience :: End Users/Desktop",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Programming Language :: Python :: 3.14",
+    "Topic :: Multimedia :: Graphics",
+    "Topic :: Scientific/Engineering :: Visualization",
+    "Topic :: Artistic Software",
+]
 dependencies = [
     "pillow>=12.0.0,<13.0.0",
     "numpy>=2.3.5,<3.0.0",
 ]
+
+[project.urls]
+Homepage = "https://github.com/tigdav/fractal-flame"
+Repository = "https://github.com/tigdav/fractal-flame"
+Issues = "https://github.com/tigdav/fractal-flame/issues"
 
 [tool.poetry]
 packages = [{ include = "flame", from = "src" }]
 
 [tool.poetry.group.dev.dependencies]
 black = "^24.8.0"
-isort = "^5.13.2"
 ruff = "^0.6.1"
-pytest = "*"
-pytest-cov = "*"
+pytest = "^8.0"
+pytest-cov = "^7.0"
 
 [build-system]
 requires = ["poetry-core>=2.0.0"]
