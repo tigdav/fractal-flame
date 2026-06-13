@@ -7,8 +7,8 @@ on:
     branches: [main]
 
 jobs:
-  ci:
-    name: lint and test
+  lint:
+    name: lint
     runs-on: ubuntu-latest
 
     steps:
@@ -18,7 +18,7 @@ jobs:
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
-          python-version: "3.11"
+          python-version: "3.12"
 
       - name: Install Poetry
         uses: snok/install-poetry@v1
@@ -31,16 +31,50 @@ jobs:
         uses: actions/cache@v4
         with:
           path: .venv
-          key: venv-${{ runner.os }}-py3.11-${{ hashFiles('poetry.lock') }}
+          key: venv-${{ runner.os }}-py3.12-lint-${{ hashFiles('poetry.lock') }}
 
       - name: Install dependencies
-        run: poetry install --with dev --no-interaction
+        run: poetry install --without test --no-interaction
 
       - name: Ruff
         run: poetry run ruff check .
 
       - name: Black
         run: poetry run black --check .
+
+  test:
+    name: test
+    runs-on: ubuntu-latest
+
+    strategy:
+      fail-fast: false
+      matrix:
+        python-version: ["3.11", "3.12", "3.13", "3.14"]
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+
+      - name: Install Poetry
+        uses: snok/install-poetry@v1
+        with:
+          version: "2.2.1"
+          virtualenvs-create: true
+          virtualenvs-in-project: true
+
+      - name: Cache Poetry virtualenv
+        uses: actions/cache@v4
+        with:
+          path: .venv
+          key: venv-${{ runner.os }}-py${{ matrix.python-version }}-test-${{ hashFiles('poetry.lock') }}
+
+      - name: Install dependencies
+        run: poetry install --without dev --no-interaction
 
       - name: Pytest
         run: poetry run pytest -m "not slow"
