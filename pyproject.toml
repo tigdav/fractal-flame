@@ -41,6 +41,9 @@ Homepage = "https://github.com/tigdav/fractal-flame"
 Repository = "https://github.com/tigdav/fractal-flame"
 Issues = "https://github.com/tigdav/fractal-flame/issues"
 
+[project.scripts]
+fractal-flame = "flame.__main__:main"
+
 [tool.poetry]
 packages = [{ include = "flame", from = "src" }]
 

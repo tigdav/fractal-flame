@@ -60,6 +60,8 @@ cd fractal-flame
 poetry install
 ```
 
+This installs the `fractal-flame` console command into the project environment.
+
 ---
 
 ## Usage
@@ -69,14 +71,17 @@ poetry install
 Basic example:
 
 ```bash
-poetry run python -m flame -i 500000 -f swirl:1.0,horseshoe:0.8 --workers 4
+poetry run fractal-flame -i 500000 -f swirl:1.0,horseshoe:0.8 --workers 4
 ```
 
 Reproducible example with a fixed seed:
 
 ```bash
-poetry run python -m flame --seed 32.123531 -i 5000 -f swirl:1.0,horseshoe:0.8 --workers 2
+poetry run fractal-flame --seed 32.123531 -i 5000 -f swirl:1.0,horseshoe:0.8 --workers 2
 ```
+
+The `python -m flame` form can be used as an alternative module entry point, e.g.
+`poetry run python -m flame --help`.
 
 #### Affine parameters from CLI
 
@@ -122,7 +127,7 @@ Run with `--help` to see the full list of options.
 All parameters can be provided using a JSON configuration file:
 
 ```bash
-poetry run python -m flame --config configs/pretty_flame.json
+poetry run fractal-flame --config configs/pretty_flame.json
 ```
 
 #### Affine parameters in JSON

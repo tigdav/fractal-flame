@@ -21,7 +21,7 @@ Each image corresponds to a configuration file located in the `configs/` directo
 To reproduce any example, run:
 
 ```bash
-poetry run python -m flame --config configs/<config_name>.json
+poetry run fractal-flame --config configs/<config_name>.json
 ```
 
 Generated images will be saved to `examples/out/` as specified in the configuration.
@@ -40,7 +40,7 @@ You can then compare your result with the reference image stored in `examples/im
     - gamma correction
 
 ```bash
-poetry run python -m flame --config configs/pretty_flame.json
+poetry run fractal-flame --config configs/pretty_flame.json
 ```
 
 ![Pretty flame](images/pretty_flame.png)
@@ -55,7 +55,7 @@ poetry run python -m flame --config configs/pretty_flame.json
     - high color contrast
 
 ```bash
-poetry run python -m flame --config configs/neon_flower_sym8.json
+poetry run fractal-flame --config configs/neon_flower_sym8.json
 ```
 
 ![Neon flower](images/neon_flower_sym8.png)
@@ -70,7 +70,7 @@ poetry run python -m flame --config configs/neon_flower_sym8.json
     - symmetry-based duplication
 
 ```bash
-poetry run python -m flame --config configs/ember_ring_sym6.json
+poetry run fractal-flame --config configs/ember_ring_sym6.json
 ```
 
 ![Ember ring](images/ember_ring_sym6.png)
@@ -86,7 +86,7 @@ poetry run python -m flame --config configs/ember_ring_sym6.json
     - gamma correction
 
 ```bash
-poetry run python -m flame --config configs/aurora_sym9.json
+poetry run fractal-flame --config configs/aurora_sym9.json
 ```
 
 ![Aurora](images/aurora_sym9.png)
@@ -102,7 +102,7 @@ poetry run python -m flame --config configs/aurora_sym9.json
     - swirl-dominated dynamics
 
 ```bash
-poetry run python -m flame --config configs/spiral_core.json
+poetry run fractal-flame --config configs/spiral_core.json
 ```
 
 ![Spiral core](images/spiral_core.png)
@@ -118,7 +118,7 @@ poetry run python -m flame --config configs/spiral_core.json
     - symmetry emphasis
 
 ```bash
-poetry run python -m flame --config configs/constellation_sym5.json
+poetry run fractal-flame --config configs/constellation_sym5.json
 ```
 
 ![Constellation](images/constellation_sym5.png)
@@ -134,7 +134,7 @@ poetry run python -m flame --config configs/constellation_sym5.json
     - gamma correction
 
 ```bash
-poetry run python -m flame --config configs/phoenix_sym11.json
+poetry run fractal-flame --config configs/phoenix_sym11.json
 ```
 
 ![Phoenix](images/phoenix_sym11.png)
@@ -150,7 +150,7 @@ poetry run python -m flame --config configs/phoenix_sym11.json
     - gamma correction
 
 ```bash
-poetry run python -m flame --config configs/soft_smoke.json
+poetry run fractal-flame --config configs/soft_smoke.json
 ```
 
 ![Soft smoke](images/soft_smoke.png)
@@ -166,7 +166,7 @@ These two examples demonstrate the effect of gamma correction on the final image
 - Config: `configs/gamma_off.json`
 
 ```bash
-poetry run python -m flame --config configs/gamma_off.json
+poetry run fractal-flame --config configs/gamma_off.json
 ```
 
 ![Gamma off](images/gamma_off.png)
@@ -176,7 +176,7 @@ poetry run python -m flame --config configs/gamma_off.json
 - Config: `configs/gamma_on.json`
 
 ```bash
-poetry run python -m flame --config configs/gamma_on.json
+poetry run fractal-flame --config configs/gamma_on.json
 ```
 
 ![Gamma on](images/gamma_on.png)
