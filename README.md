@@ -1,9 +1,11 @@
 # Fractal Flame Generator
 
 [![CI](https://github.com/tigdav/fractal-flame/actions/workflows/ci.yml/badge.svg)](https://github.com/tigdav/fractal-flame/actions/workflows/ci.yml)
-[![Python](https://img.shields.io/badge/python-3.11%2B-blue)](https://www.python.org/downloads/)
+[![Python](https://img.shields.io/badge/python-3.11--3.14-blue)](https://www.python.org/downloads/)
 [![License: MIT](https://img.shields.io/badge/license-MIT-green)](LICENSE)
+[![Ruff](https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/astral-sh/ruff/main/assets/badge/v2.json)](https://github.com/astral-sh/ruff)
 [![Code style: black](https://img.shields.io/badge/code%20style-black-000000)](https://github.com/psf/black)
+[![Checked with mypy](https://www.mypy-lang.org/static/mypy_badge.svg)](https://mypy-lang.org/)
 
 <p align="center">
   <img src="examples/images/constellation_sym5.png" alt="Constellation — fractal flame with 5-fold symmetry" width="30%"/>
