@@ -244,6 +244,16 @@ Test coverage is measured using `pytest-cov`:
 poetry run pytest --cov=src/flame --cov-report=term
 ```
 
+### Code quality
+
+Linting, formatting and static type checks:
+
+```bash
+poetry run ruff check .
+poetry run black --check .
+poetry run mypy src/flame
+```
+
 ---
 
 ## Notes

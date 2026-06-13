@@ -50,6 +50,7 @@ packages = [{ include = "flame", from = "src" }]
 [tool.poetry.group.dev.dependencies]
 black = "^24.8.0"
 ruff = "^0.6.1"
+mypy = "^2.1.0"
 
 [tool.poetry.group.test.dependencies]
 pytest = "^8.0"
@@ -64,6 +65,12 @@ pythonpath = ["src"]
 markers = [
     "slow: marks tests as slow (deselect with '-m \"not slow\"')",
 ]
+
+[tool.mypy]
+python_version = "3.11"
+warn_return_any = true
+warn_unused_configs = true
+warn_unused_ignores = true
 
 [tool.ruff]
 line-length = 88
