@@ -11,6 +11,8 @@ from flame.config import (
     SizeConfig,
     _parse_affine_params_single,
     _parse_functions,
+    _to_float,
+    _to_int,
     build_config,
     load_json_config,
     validate_config,
@@ -314,3 +316,55 @@ def test_validate_config_unknown_function_name_raises():
 
     with pytest.raises(ConfigError):
         validate_config(config)
+
+
+@pytest.mark.parametrize(
+    ("value", "expected"),
+    [(5, 5), (5.0, 5), ("7", 7), (-3, -3)],
+)
+def test_to_int_accepts_valid_values(value, expected):
+    assert _to_int(value) == expected
+
+
+@pytest.mark.parametrize(
+    "value",
+    [2.5, True, False, "x", "5.5", [1], {"a": 1}, None],
+)
+def test_to_int_rejects_invalid_values(value):
+    with pytest.raises(ConfigError):
+        _to_int(value)
+
+
+@pytest.mark.parametrize(
+    ("value", "expected"),
+    [(1.5, 1.5), (3, 3.0), ("2.5", 2.5), (-0.25, -0.25)],
+)
+def test_to_float_accepts_valid_values(value, expected):
+    assert _to_float(value) == pytest.approx(expected)
+
+
+@pytest.mark.parametrize(
+    "value",
+    [True, False, "x", [1], {"a": 1}, None],
+)
+def test_to_float_rejects_invalid_values(value):
+    with pytest.raises(ConfigError):
+        _to_float(value)
+
+
+def test_build_config_rejects_non_integer_float_field(tmp_path):
+    path = tmp_path / "config.json"
+    path.write_text(json.dumps({"iteration_count": 2.5}), encoding="utf-8")
+
+    args = _make_empty_args(config=str(path))
+    with pytest.raises(ConfigError):
+        build_config(args)
+
+
+def test_build_config_rejects_bool_numeric_field(tmp_path):
+    path = tmp_path / "config.json"
+    path.write_text(json.dumps({"gamma": True}), encoding="utf-8")
+
+    args = _make_empty_args(config=str(path))
+    with pytest.raises(ConfigError):
+        build_config(args)

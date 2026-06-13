@@ -2,7 +2,7 @@ import json
 from collections.abc import Mapping
 from dataclasses import dataclass
 from pathlib import Path
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, NoReturn
 
 if TYPE_CHECKING:
     import argparse
@@ -28,8 +28,30 @@ DEFAULT_FUNCTION = "swirl"
 JsonMapping = Mapping[str, object]
 
 
-def _raise_config(msg: str) -> None:
+def _raise_config(msg: str) -> NoReturn:
     raise ConfigError(msg)
+
+
+def _to_int(value: object) -> int:
+    """Coerce a JSON value to int, raising ConfigError on unsupported values."""
+    if isinstance(value, bool) or not isinstance(value, int | float | str):
+        _raise_config(f"Expected an integer value, got: {value!r}")
+    if isinstance(value, float) and not value.is_integer():
+        _raise_config(f"Expected an integer value, got a non-integer float: {value!r}")
+    try:
+        return int(value)
+    except (TypeError, ValueError):
+        _raise_config(f"Invalid integer value: {value!r}")
+
+
+def _to_float(value: object) -> float:
+    """Coerce a JSON value to float, raising ConfigError on unsupported values."""
+    if isinstance(value, bool) or not isinstance(value, int | float | str):
+        _raise_config(f"Expected a numeric value, got: {value!r}")
+    try:
+        return float(value)
+    except (TypeError, ValueError):
+        _raise_config(f"Invalid numeric value: {value!r}")
 
 
 @dataclass
@@ -196,32 +218,32 @@ def _apply_size(config: Config, data: JsonMapping) -> None:
     height = size.get("height")
 
     if width is not None:
-        config.size.width = int(width)
+        config.size.width = _to_int(width)
     if height is not None:
-        config.size.height = int(height)
+        config.size.height = _to_int(height)
 
 
 def _apply_scalar_fields(config: Config, data: JsonMapping) -> None:
     if "iteration_count" in data:
-        config.iteration_count = int(data["iteration_count"])
+        config.iteration_count = _to_int(data["iteration_count"])
 
     if "output_path" in data:
         config.output_path = str(data["output_path"])
 
     if "workers" in data:
-        config.workers = int(data["workers"])
+        config.workers = _to_int(data["workers"])
 
     if "seed" in data:
-        config.seed = float(data["seed"])
+        config.seed = _to_float(data["seed"])
 
     if "gamma_correction" in data:
         config.gamma_correction = bool(data["gamma_correction"])
 
     if "gamma" in data:
-        config.gamma = float(data["gamma"])
+        config.gamma = _to_float(data["gamma"])
 
     if "symmetry_level" in data:
-        config.symmetry_level = int(data["symmetry_level"])
+        config.symmetry_level = _to_int(data["symmetry_level"])
 
 
 def _apply_global_affine(config: Config, data: JsonMapping) -> None:
@@ -230,12 +252,12 @@ def _apply_global_affine(config: Config, data: JsonMapping) -> None:
     affine_dict = _as_dict(affine_obj)
     if affine_dict is not None:
         config.affine_params = AffineParams(
-            a=float(affine_dict.get("a", config.affine_params.a)),
-            b=float(affine_dict.get("b", config.affine_params.b)),
-            c=float(affine_dict.get("c", config.affine_params.c)),
-            d=float(affine_dict.get("d", config.affine_params.d)),
-            e=float(affine_dict.get("e", config.affine_params.e)),
-            f=float(affine_dict.get("f", config.affine_params.f)),
+            a=_to_float(affine_dict.get("a", config.affine_params.a)),
+            b=_to_float(affine_dict.get("b", config.affine_params.b)),
+            c=_to_float(affine_dict.get("c", config.affine_params.c)),
+            d=_to_float(affine_dict.get("d", config.affine_params.d)),
+            e=_to_float(affine_dict.get("e", config.affine_params.e)),
+            f=_to_float(affine_dict.get("f", config.affine_params.f)),
         )
         return
 
@@ -255,12 +277,12 @@ def _apply_global_affine(config: Config, data: JsonMapping) -> None:
 
 def _parse_affine_params_dict(affine_dict: JsonMapping) -> AffineParams:
     return AffineParams(
-        a=float(affine_dict.get("a", 1.0)),
-        b=float(affine_dict.get("b", 0.0)),
-        c=float(affine_dict.get("c", 0.0)),
-        d=float(affine_dict.get("d", 0.0)),
-        e=float(affine_dict.get("e", 1.0)),
-        f=float(affine_dict.get("f", 0.0)),
+        a=_to_float(affine_dict.get("a", 1.0)),
+        b=_to_float(affine_dict.get("b", 0.0)),
+        c=_to_float(affine_dict.get("c", 0.0)),
+        d=_to_float(affine_dict.get("d", 0.0)),
+        e=_to_float(affine_dict.get("e", 1.0)),
+        f=_to_float(affine_dict.get("f", 0.0)),
     )
 
 
@@ -289,7 +311,7 @@ def _apply_functions_from_json(config: Config, data: JsonMapping) -> None:
         parsed.append(
             FunctionConfig(
                 name=str(name),
-                weight=float(weight),
+                weight=_to_float(weight),
                 affine_params=affine_params,
             )
         )
